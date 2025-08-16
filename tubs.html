@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tubs – Shoebox Grow Journal</title>
+  <meta name="description" content="A simple, private journal for tracking tubs you've grown. Data is saved in your browser.">
+  <style>
+    :root{
+      --bg:#0f1220; --panel:#171a2b; --ink:#e7e9ff; --muted:#a8b0d8; --accent:#8de3b1; --accent2:#9fc4ff; --danger:#ff7a7a; --shadow:rgba(0,0,0,.25)
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji"; background:radial-gradient(1200px 700px at 100% -10%, #1a2250 0%, var(--bg) 60%) fixed, var(--bg); color:var(--ink)}
+    .wrap{max-width:1080px; margin:0 auto; padding:20px}
+
+    /* Header */
+    header{position:relative; overflow:hidden; border-radius:24px; background:linear-gradient(180deg, #20264d 0%, #14182e 60%, #101325 100%); box-shadow:0 10px 30px var(--shadow);}
+    .hero{display:grid; grid-template-columns: 1fr;}
+    .hero svg{width:100%; height:auto; display:block}
+    .hero h1{position:absolute; left:24px; bottom:16px; margin:0; font-size: clamp(36px, 6vw, 64px); letter-spacing:1px}
+    .badge{position:absolute; top:14px; left:14px; padding:.35rem .6rem; border:1px solid #2a2f62; color:var(--muted); border-radius:999px; font-size:.8rem; backdrop-filter: blur(6px)}
+
+    /* App */
+    .grid{display:grid; grid-template-columns: 1fr 2fr; gap:18px; margin-top:22px}
+    @media (max-width: 880px){ .grid{grid-template-columns:1fr} }
+
+    .card{background:var(--panel); border:1px solid #1f2340; border-radius:18px; box-shadow:0 6px 20px var(--shadow)}
+    .card h2{margin:.5rem 0 1rem; font-size:1.1rem; color:var(--accent2)}
+    .pad{padding:16px}
+    label{display:block; font-size:.85rem; color:var(--muted); margin:.6rem 0 .25rem}
+    input, textarea, select{width:100%; padding:.7rem .8rem; border-radius:12px; border:1px solid #2a2f62; background:#0f1330; color:var(--ink); outline:none}
+    textarea{min-height:120px; resize:vertical}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    button{appearance:none; border:1px solid #2a2f62; background:#0f1330; color:var(--ink); padding:.7rem .9rem; border-radius:12px; cursor:pointer}
+    button.primary{background:linear-gradient(180deg, #2a855a, #126c45); border-color:#0b5a39}
+    button.ghost{background:transparent}
+    button.danger{background:linear-gradient(180deg, #b24545, #8b2e2e); border-color:#7a2828}
+
+    /* List */
+    .toolbar{display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap}
+    .search{flex:1}
+    .entry{padding:16px; border-top:1px solid #23274a}
+    .entry:first-child{border-top:none}
+    .entry h3{margin:.1rem 0 .35rem; font-size:1.05rem}
+    .meta{font-size:.8rem; color:var(--muted)}
+    .tags{display:flex; gap:6px; flex-wrap:wrap; margin:.35rem 0}
+    .tag{font-size:.72rem; color:#0a1830; background:var(--accent); border-radius:999px; padding:.2rem .5rem}
+
+    .empty{padding:26px; color:var(--muted); text-align:center}
+
+    /* Dialog */
+    dialog{border:none; border-radius:16px; background:var(--panel); color:var(--ink); padding:0; width:min(720px, 94vw)}
+    dialog::backdrop{background:rgba(0,0,20,.6)}
+
+    /* Print */
+    @media print{ .grid{display:block} .actions, .toolbar .actions{display:none} body{background:white; color:black} header{box-shadow:none} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header aria-label="Shoebox grow banner">
+      <div class="badge">private journal</div>
+      <div class="hero" role="img" aria-label="Illustrated shoebox mushroom grow with cubes">
+        <!-- Inline SVG banner so you don't need to host an image -->
+        <svg viewBox="0 0 1440 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#2a3070"/>
+              <stop offset="100%" stop-color="#131734"/>
+            </linearGradient>
+            <linearGradient id="cap" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#ffd89b"/>
+              <stop offset="100%" stop-color="#f5a95d"/>
+            </linearGradient>
+            <linearGradient id="stem" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#e9e7db"/>
+              <stop offset="100%" stop-color="#c9c6b6"/>
+            </linearGradient>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/><feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <rect width="1440" height="420" fill="url(#sky)"/>
+          <!-- Stars -->
+          <g opacity=".35">
+            <circle cx="120" cy="80" r="2" fill="#9fc4ff"/>
+            <circle cx="240" cy="140" r="1.6" fill="#9fc4ff"/>
+            <circle cx="660" cy="40" r="1.8" fill="#9fc4ff"/>
+            <circle cx="980" cy="120" r="1.4" fill="#9fc4ff"/>
+            <circle cx="1300" cy="70" r="2.2" fill="#9fc4ff"/>
+          </g>
+          <!-- Shoebox -->
+          <g transform="translate(220,110)">
+            <rect x="0" y="70" width="1000" height="210" rx="18" fill="#263064" stroke="#36407c"/>
+            <rect x="20" y="50" width="960" height="40" rx="10" fill="#202959" stroke="#394482"/>
+            <!-- Substrate line -->
+            <rect x="20" y="210" width="960" height="6" fill="#4a3f30"/>
+            <!-- Mushrooms -->
+            <g filter="url(#glow)">
+              <!-- Repeat a few stylized clusters -->
+              <g transform="translate(130,60)">
+                <rect x="-6" y="120" width="12" height="70" rx="6" fill="url(#stem)"/>
+                <ellipse cx="0" cy="120" rx="14" ry="10" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="108" rx="32" ry="18" fill="url(#cap)"/>
+              </g>
+              <g transform="translate(240,20) scale(1.1)">
+                <rect x="-5" y="140" width="10" height="60" rx="5" fill="url(#stem)"/>
+                <ellipse cx="0" cy="140" rx="12" ry="9" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="129" rx="28" ry="16" fill="url(#cap)"/>
+              </g>
+              <g transform="translate(340,40) scale(1.25)">
+                <rect x="-7" y="120" width="14" height="76" rx="7" fill="url(#stem)"/>
+                <ellipse cx="0" cy="121" rx="14" ry="10" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="108" rx="34" ry="19" fill="url(#cap)"/>
+              </g>
+              <g transform="translate(470,30) scale(1)">
+                <rect x="-4" y="140" width="8" height="58" rx="4" fill="url(#stem)"/>
+                <ellipse cx="0" cy="141" rx="11" ry="8" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="131" rx="24" ry="14" fill="url(#cap)"/>
+              </g>
+              <g transform="translate(620,70) scale(1.2)">
+                <rect x="-6" y="120" width="12" height="70" rx="6" fill="url(#stem)"/>
+                <ellipse cx="0" cy="120" rx="14" ry="10" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="108" rx="30" ry="17" fill="url(#cap)"/>
+              </g>
+              <g transform="translate(760,50) scale(1.05)">
+                <rect x="-5" y="130" width="10" height="64" rx="5" fill="url(#stem)"/>
+                <ellipse cx="0" cy="130" rx="12" ry="9" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="119" rx="28" ry="16" fill="url(#cap)"/>
+              </g>
+              <g transform="translate(900,35) scale(1.18)">
+                <rect x="-6" y="130" width="12" height="68" rx="6" fill="url(#stem)"/>
+                <ellipse cx="0" cy="131" rx="13" ry="9" fill="#b3b0a4"/>
+                <ellipse cx="0" cy="119" rx="30" ry="17" fill="url(#cap)"/>
+              </g>
+            </g>
+          </g>
+          <!-- Title text on banner -->
+          <g>
+            <text x="60" y="112" font-size="44" fill="#9fc4ff" opacity=".9" font-weight="600">shoebox grow journal</text>
+            <text x="60" y="168" font-size="110" fill="#8de3b1" font-weight="800" letter-spacing="2">tubs</text>
+          </g>
+        </svg>
+      </div>
+      <h1 class="sr-only">Tubs – Shoebox Grow Journal</h1>
+    </header>
+
+    <main class="grid" id="app" aria-live="polite">
+      <!-- Left: form -->
+      <section class="card pad" aria-label="Add a new tub entry">
+        <h2>Add entry</h2>
+        <form id="newEntryForm">
+          <label for="date">Date</label>
+          <input id="date" name="date" type="date" required>
+
+          <div class="row">
+            <div>
+              <label for="title">Title</label>
+              <input id="title" name="title" type="text" placeholder="Shoebox A – first flush" required>
+            </div>
+            <div>
+              <label for="strain">Strain/Variety (optional)</label>
+              <input id="strain" name="strain" type="text" placeholder="—">
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option>Colonizing</option>
+                <option>Pinning</option>
+                <option>Fruiting</option>
+                <option>Harvested</option>
+                <option>Retired</option>
+              </select>
+            </div>
+            <div>
+              <label for="yield">Yield (optional)</label>
+              <input id="yield" name="yield" type="text" placeholder="e.g., 180 g wet">
+            </div>
+          </div>
+
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes" placeholder="Observations, conditions, maintenance…"></textarea>
+
+          <div class="actions">
+            <button class="primary" type="submit">Add entry</button>
+            <button type="button" id="exportBtn">Export JSON</button>
+            <label for="importFile" class="button ghost" style="display:inline-flex; align-items:center; gap:.5rem; cursor:pointer">
+              <span>Import JSON</span>
+              <input id="importFile" type="file" accept="application/json" style="display:none">
+            </label>
+            <button class="danger" type="button" id="clearBtn" title="Remove all entries">Clear all</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Right: list -->
+      <section class="card pad" aria-label="Entries list">
+        <div class="toolbar">
+          <input class="search" id="search" type="search" placeholder="Search title, notes, tags…" aria-label="Search entries">
+          <div class="actions">
+            <select id="sort" aria-label="Sort entries">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title">Title A→Z</option>
+            </select>
+          </div>
+        </div>
+        <div id="list" role="list">
+          <div class="empty">No entries yet. Add your first tub on the left →</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Edit dialog -->
+  <dialog id="editDialog" aria-label="Edit entry">
+    <form method="dialog" id="editForm">
+      <div class="pad">
+        <h2>Edit entry</h2>
+        <input type="hidden" id="editId">
+        <label for="editDate">Date</label>
+        <input id="editDate" type="date" required>
+        <label for="editTitle">Title</label>
+        <input id="editTitle" type="text" required>
+        <div class="row">
+          <div>
+            <label for="editStrain">Strain/Variety</label>
+            <input id="editStrain" type="text">
+          </div>
+          <div>
+            <label for="editStatus">Status</label>
+            <select id="editStatus">
+              <option>Colonizing</option>
+              <option>Pinning</option>
+              <option>Fruiting</option>
+              <option>Harvested</option>
+              <option>Retired</option>
+            </select>
+          </div>
+        </div>
+        <label for="editYield">Yield</label>
+        <input id="editYield" type="text">
+        <label for="editNotes">Notes</label>
+        <textarea id="editNotes" rows="6"></textarea>
+        <div class="actions" style="justify-content:flex-end">
+          <button type="button" id="editCancel">Cancel</button>
+          <button class="primary" id="editSave" value="default">Save changes</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const listEl = $('#list');
+  const form = $('#newEntryForm');
+  const search = $('#search');
+  const sortSel = $('#sort');
+  const STORAGE_KEY = 'tubJournalEntries:v1';
+
+  const uid = () => crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random().toString(16).slice(2);
+  const todayISO = () => new Date().toISOString().slice(0,10);
+  $('#date').value = todayISO();
+
+  const load = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const save = entries => localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+
+  function render(){
+    const q = search.value.trim().toLowerCase();
+    let entries = load();
+    const sort = sortSel.value;
+    entries.sort((a,b)=>{
+      if(sort==='title') return a.title.localeCompare(b.title);
+      if(sort==='oldest') return (a.date||'').localeCompare(b.date||'');
+      return (b.date||'').localeCompare(a.date||'');
+    });
+    if(q){
+      entries = entries.filter(e => [e.title,e.notes,e.strain,e.status,e.yield].filter(Boolean).join(' ').toLowerCase().includes(q));
+    }
+
+    if(!entries.length){
+      listEl.innerHTML = '<div class="empty">No entries match. Add some on the left or clear the search.</div>';
+      return;
+    }
+
+    listEl.innerHTML = entries.map(e => `
+      <article class="entry" role="listitem" aria-labelledby="t-${e.id}">
+        <h3 id="t-${e.id}">${escapeHTML(e.title)}</h3>
+        <div class="meta">${formatDate(e.date)} · ${escapeHTML(e.status||'—')}${e.strain? ' · '+escapeHTML(e.strain): ''}${e.yield? ' · '+escapeHTML(e.yield): ''}</div>
+        ${e.notes? `<p>${linkify(escapeHTML(e.notes)).replace(/\n/g,'<br>')}</p>`:''}
+        <div class="tags">${(e.tags||[]).map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join('')}</div>
+        <div class="actions">
+          <button type="button" onclick="editEntry('${e.id}')">Edit</button>
+          <button type="button" class="danger" onclick="deleteEntry('${e.id}')">Delete</button>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function formatDate(iso){
+    if(!iso) return '—';
+    const d = new Date(iso+'T00:00:00');
+    return d.toLocaleDateString(undefined,{year:'numeric', month:'short', day:'2-digit'});
+  }
+
+  function escapeHTML(str){
+    return (str||'').replace(/[&<>"]?/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]||c));
+  }
+
+  function linkify(text){
+    const urlRe = /(https?:\/\/[^\s]+)/g; return text.replace(urlRe,'<a href="$1" target="_blank" rel="noopener">$1<\/a>');
+  }
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    const entry = {
+      id: uid(),
+      date: data.date || todayISO(),
+      title: data.title?.trim(),
+      strain: data.strain?.trim(),
+      status: data.status,
+      yield: data.yield?.trim(),
+      notes: data.notes?.trim(),
+      tags: suggestTags(data)
+    };
+    if(!entry.title){ alert('Please add a title'); return; }
+    const entries = load();
+    entries.push(entry);
+    save(entries);
+    form.reset();
+    $('#date').value = todayISO();
+    render();
+  });
+
+  search.addEventListener('input', render);
+  sortSel.addEventListener('change', render);
+
+  // Export / Import / Clear
+  $('#exportBtn').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(load(), null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `tubs-journal-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+
+  $('#importFile').addEventListener('change', (ev)=>{
+    const file = ev.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(reader.result);
+        if(!Array.isArray(data)) throw new Error('Bad format');
+        save(data); render();
+      }catch(err){ alert('Could not import: ' + err.message); }
+    };
+    reader.readAsText(file);
+  });
+
+  $('#clearBtn').addEventListener('click', ()=>{
+    if(confirm('This will remove all entries from this browser. Continue?')){
+      localStorage.removeItem(STORAGE_KEY); render();
+    }
+  });
+
+  // Edit dialog
+  window.editEntry = (id)=>{
+    const e = load().find(x=>x.id===id); if(!e) return;
+    $('#editId').value = e.id;
+    $('#editDate').value = e.date || todayISO();
+    $('#editTitle').value = e.title || '';
+    $('#editStrain').value = e.strain || '';
+    $('#editStatus').value = e.status || 'Colonizing';
+    $('#editYield').value = e.yield || '';
+    $('#editNotes').value = e.notes || '';
+    $('#editDialog').showModal();
+  };
+  $('#editCancel').addEventListener('click', ()=> $('#editDialog').close());
+  $('#editSave').addEventListener('click', (ev)=>{
+    ev.preventDefault();
+    const id = $('#editId').value;
+    const entries = load();
+    const i = entries.findIndex(x=>x.id===id); if(i<0) return;
+    entries[i] = {
+      ...entries[i],
+      date: $('#editDate').value,
+      title: $('#editTitle').value.trim(),
+      strain: $('#editStrain').value.trim(),
+      status: $('#editStatus').value,
+      yield: $('#editYield').value.trim(),
+      notes: $('#editNotes').value.trim(),
+      tags: suggestTags({
+        strain: $('#editStrain').value,
+        status: $('#editStatus').value,
+        notes: $('#editNotes').value
+      })
+    };
+    save(entries);
+    $('#editDialog').close();
+    render();
+  });
+
+  window.deleteEntry = (id)=>{
+    if(!confirm('Delete this entry?')) return;
+    const entries = load().filter(e=>e.id!==id);
+    save(entries); render();
+  };
+
+  function suggestTags(data){
+    const tags = [];
+    if(data.status) tags.push(data.status.toLowerCase());
+    if(data.strain){
+      const n = data.strain.trim().toLowerCase();
+      if(n) tags.push(n);
+    }
+    if(data.notes){
+      const t = data.notes.toLowerCase();
+      if(t.includes('contam')) tags.push('contam');
+      if(t.includes('flush')) tags.push('flush');
+      if(t.includes('shoebox')) tags.push('shoebox');
+    }
+    return Array.from(new Set(tags));
+  }
+
+  // First paint
+  render();
+})();
+</script>
+</body>
+</html>
