@@ -3,14 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Tubs</title>
+  <style>
+        .text-box {
+            background-color: lightyellow; /* background inside the box */
+            border: 2px solid black;      /* box border */
+            padding: 15px;                /* space inside the box */
+            margin: 20px;                 /* space outside the box */
+            border-radius: 10px;          /* rounded corners */
+            width: 300px;                 /* optional fixed width */
+        }
+
+        body {
+            background-color: lightblue;  /* background of the whole page */
+        }
+    </style>
 </head>
-<body style="background-color: lightblue;">
+<body>
   <img src="images/tubs.png" alt="Mycology Spawn Log" style="display: block; margin: 0 auto; max-width: 300px;">
-  <p>This page is all about tubs.</p>
+ 
 
   <!-- Link back to homepage -->
   <a href="index.html">
     <img src="images/jarsbutton.png" alt="Back to Jars" width="200" height="50">
   </a>
+
+  <div class="text-box">
+        This is my block of text inside a box.  
+        It has a different background color and a border around it.
+    </div>
 </body>
 </html>
