@@ -128,13 +128,17 @@
     </tbody>
   </table>
 <script>
+  // use something unique so it doesn't clash with anyone else
   const counterUrl = "https://api.countapi.xyz/hitmycologybro/jars";
+
   fetch(counterUrl)
     .then(res => res.json())
     .then(data => {
       document.getElementById("visitor-count").textContent = data.value;
-    });
+    })
+    .catch(err => console.error("Counter error:", err));
 </script>
+
 </body>
 </html>
 
