@@ -46,7 +46,9 @@
   <a href="coin.html">
      <img src="images/coinbutton.jpeg" alt="coin" width="200" height="50">
 </a>
-  
+  <div class="counter">
+  Visitors: <span id="visitor-count">0</span>
+</div>
   <table>
     <thead>
       <tr>
@@ -125,7 +127,14 @@
       <!-- Add more rows as you need -->
     </tbody>
   </table>
-
+<script>
+  const counterUrl = "https://api.countapi.xyz/hit/yourgithubusername/mylogpage";
+  fetch(counterUrl)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("visitor-count").textContent = data.value;
+    });
+</script>
 </body>
 </html>
 
