@@ -168,21 +168,28 @@
     function updateChart() {
       if (runs.length === 0) return;
 
+      // Sort by date before charting
+      runs.sort((a, b) => new Date(a.date) - new Date(b.date));
+
       if (chart) chart.destroy();
 
       chart = new Chart(ctx, {
-        type: 'scatter',
+        type: 'line',
         data: {
+          labels: runs.map(r => r.date),
           datasets: [{
-            label: 'Runs',
-            data: runs.map(r => ({ x: parseFloat(r.distance), y: timeToMinutes(r.time) })),
-            backgroundColor: 'blue'
+            label: 'Time (minutes)',
+            data: runs.map(r => timeToMinutes(r.time)),
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0,0,255,0.2)',
+            fill: true,
+            tension: 0.3
           }]
         },
         options: {
           scales: {
             x: {
-              title: { display: true, text: 'Distance (km)' }
+              title: { display: true, text: 'Date' }
             },
             y: {
               title: { display: true, text: 'Time (minutes)' }
