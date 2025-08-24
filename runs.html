@@ -8,27 +8,42 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
       margin: 0;
       padding: 20px;
-      text-align: center;
+      background-color: #fdf6b2; /* light yellow */
     }
-    img.header {
-      max-width: 600px;
+    header {
+      text-align: center;
       margin-bottom: 20px;
+    }
+    header img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    nav {
+      text-align: center;
+      margin: 20px 0;
     }
     nav a {
       margin: 0 10px;
       text-decoration: none;
-      color: #fff;
-      background: #0077cc;
-      padding: 10px 15px;
-      border-radius: 5px;
+      color: #333;
+      font-weight: bold;
+    }
+    form {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    form input {
+      margin: 5px;
+      padding: 8px;
     }
     table {
-      width: 80%;
-      margin: 20px auto;
+      width: 100%;
       border-collapse: collapse;
+      margin-top: 20px;
       background: white;
     }
     th, td {
@@ -37,42 +52,55 @@
       text-align: center;
     }
     th {
-      background-color: #0077cc;
+      background: #4caf50;
       color: white;
     }
-    #runForm {
-      margin: 20px auto;
-      width: 80%;
+    tr:nth-child(even) {
+      background: #f9f9f9;
     }
-    input, button {
-      margin: 5px;
-      padding: 8px;
+    .button-bar {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .button-bar button {
+      padding: 10px 15px;
+      background: #e63946;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .button-bar button:hover {
+      background: #d62828;
+    }
+    canvas {
+      margin-top: 20px;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header Image -->
-  <img src="images/running-header.png" alt="Running" class="header">
+  <header>
+    <img src="images/running_header.png" alt="Running Tracker">
+  </header>
 
-  <!-- Navigation -->
   <nav>
     <a href="index.html">Jars</a>
     <a href="tubs.html">Tubs</a>
-    <a href="coin.html">Coin</a>
+    <a href="coin.html">Coins</a>
   </nav>
 
-  <h1>Run Tracker</h1>
-
-  <!-- Run Input Form -->
   <form id="runForm">
     <input type="date" id="date" required>
-    <input type="number" step="0.01" id="distance" placeholder="Distance (km)" required>
+    <input type="number" id="distance" placeholder="Distance (km)" step="0.01" required>
     <input type="text" id="time" placeholder="Time (mm:ss)" pattern="^[0-9]{1,2}:[0-5][0-9]$" required>
     <button type="submit">Add Run</button>
   </form>
 
-  <!-- Run Table -->
   <table id="runTable">
     <thead>
       <tr>
@@ -84,38 +112,53 @@
     <tbody></tbody>
   </table>
 
-  <!-- Chart -->
+  <div class="button-bar">
+    <button id="clearRuns">Clear All Runs</button>
+  </div>
+
   <canvas id="runChart" width="400" height="200"></canvas>
 
   <script>
     const runForm = document.getElementById('runForm');
     const runTableBody = document.querySelector('#runTable tbody');
     const ctx = document.getElementById('runChart').getContext('2d');
+    const clearButton = document.getElementById('clearRuns');
 
-    let runs = [];
+    let runs = JSON.parse(localStorage.getItem('runs')) || [];
     let chart;
+
+    // Render saved runs on page load
+    runs.forEach(r => addRunToTable(r));
+    updateChart();
 
     runForm.addEventListener('submit', function(e) {
       e.preventDefault();
 
       const date = document.getElementById('date').value;
-      const distance = parseFloat(document.getElementById('distance').value).toFixed(2); // force 2 decimals
+      const distance = parseFloat(document.getElementById('distance').value).toFixed(2); 
       const time = document.getElementById('time').value;
 
-      // Add to array
-      runs.push({ date, distance, time });
+      const run = { date, distance, time };
+
+      // Save in array + localStorage
+      runs.push(run);
+      localStorage.setItem('runs', JSON.stringify(runs));
 
       // Add to table
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${date}</td><td>${distance}</td><td>${time}</td>`;
-      runTableBody.appendChild(row);
+      addRunToTable(run);
 
       // Update chart
       updateChart();
-      
+
       // Reset form
       runForm.reset();
     });
+
+    function addRunToTable(run) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${run.date}</td><td>${run.distance}</td><td>${run.time}</td>`;
+      runTableBody.appendChild(row);
+    }
 
     function timeToMinutes(timeStr) {
       const [min, sec] = timeStr.split(':').map(Number);
@@ -123,8 +166,7 @@
     }
 
     function updateChart() {
-      const distances = runs.map(r => r.distance);
-      const times = runs.map(r => timeToMinutes(r.time));
+      if (runs.length === 0) return;
 
       if (chart) chart.destroy();
 
@@ -149,6 +191,16 @@
         }
       });
     }
+
+    // Clear all runs
+    clearButton.addEventListener('click', function() {
+      if (confirm("Are you sure you want to clear all runs?")) {
+        runs = [];
+        localStorage.removeItem('runs');
+        runTableBody.innerHTML = "";
+        if (chart) chart.destroy();
+      }
+    });
   </script>
 
 </body>
