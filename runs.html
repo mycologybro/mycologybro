@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .header {
+      background: url('images/runningshoes.jpg') no-repeat center center;
+      background-size: cover;
+      padding: 60px 20px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    }
+    nav {
+      margin: 20px 0;
+    }
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #fff;
+      background: #6c7ae0;
+      padding: 10px 15px;
+      border-radius: 5px;
+    }
+    nav a:hover {
+      background: #555;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #6c7ae0;
+      color: white;
+    }
+    #chart-container {
+      width: 80%;
+      margin: 40px auto;
+    }
+    form {
+      margin: 20px auto;
+      background: white;
+      padding: 15px;
+      border: 1px solid #ccc;
+      width: 80%;
+      border-radius: 8px;
+    }
+    form input {
+      margin: 5px;
+      padding: 8px;
+    }
+    form button {
+      background: #6c7ae0;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    form button:hover {
+      background: #555;
+    }
+  </style>
+  <!-- Chart.js for graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="header">Running</div>
+
+  <nav>
+    <a href="index.html">Jars</a>
+    <a href="tubs.html">Tubs</a>
+    <a href="coin.html">Coins</a>
+  </nav>
+
+  <h2>Run Log</h2>
+
+  <!-- Form to add runs -->
+  <form id="runForm">
+    <input type="date" id="date" required>
+    <input type="number" id="distance" step="0.1" placeholder="Distance (km)" required>
+    <input type="number" id="time" step="0.1" placeholder="Time (minutes)" required>
+    <button type="submit">Add Run</button>
+  </form>
+
+  <!-- Table for runs -->
+  <table id="runTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Distance (km)</th>
+        <th>Time (minutes)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025-08-16</td>
+        <td>5</td>
+        <td>28</td>
+      </tr>
+      <tr>
+        <td>2025-08-14</td>
+        <td>3</td>
+        <td>18</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Graph -->
+  <div id="chart-container">
+    <canvas id="runChart"></canvas>
+  </div>
+
+  <script>
+    let runChart;
+
+    // Get data from the table
+    function getRunData() {
+      const rows = document.querySelectorAll("#runTable tbody tr");
+      let distances = [];
+      let times = [];
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        distances.push(parseFloat(cells[1].innerText));
+        times.push(parseFloat(cells[2].innerText));
+      });
+      return { distances, times };
+    }
+
+    // Render chart
+    function renderChart() {
+      const ctx = document.getElementById("runChart").getContext("2d");
+      const data = getRunData();
+
+      if (runChart) runChart.destroy(); // reset chart before redrawing
+
+      runChart = new Chart(ctx, {
+        type: "scatter",
+        data: {
+          datasets: [{
+            label: "Runs (Distance vs Time)",
+            data: data.distances.map((d, i) => ({ x: d, y: data.times[i] })),
+            backgroundColor: "blue"
+          }]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: "Distance (km)" } },
+            y: { title: { display: true, text: "Time (minutes)" } }
+          }
+        }
+      });
+    }
+
+    // Add run from form
+    document.getElementById("runForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const date = document.getElementById("date").value;
+      const distance = document.getElementById("distance").value;
+      const time = document.getElementById("time").value;
+
+      if (date && distance && time) {
+        const tableBody = document.querySelector("#runTable tbody");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `<td>${date}</td><td>${distance}</td><td>${time}</td>`;
+        tableBody.appendChild(newRow);
+
+        renderChart(); // update graph
+        this.reset(); // clear form
+      }
+    });
+
+    renderChart(); // initial render
+  </script>
+
+</body>
+</html>
