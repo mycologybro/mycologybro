@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agar Plates</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #ffe6f0; /* light pink */
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    header img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    nav {
+      text-align: center;
+      margin: 20px 0;
+    }
+    nav a {
+      margin: 0 12px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+    .table-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    table {
+      border-collapse: collapse;
+      background: white;
+      width: 300px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #4a90e2;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #e6f0ff; /* light blue */
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="images/agar_header.png" alt="Agar Plates">
+  </header>
+
+  <nav>
+    <a href="index.html">Jars</a>
+    <a href="tubs.html">Tubs</a>
+    <a href="coin.html">Coins</a>
+    <a href="runs.html">Running</a>
+  </nav>
+
+  <div class="table-container">
+
+    <!-- Needs Transfer -->
+    <table>
+      <thead>
+        <tr><th colspan="2">Needs Transfer</th></tr>
+        <tr><th>Strain</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Golden Teacher</td><td>7/8</td></tr>
+        <tr><td>Golden Teacher</td><td>7/8</td></tr>
+        <tr><td>Golden Teacher</td><td>7/8</td></tr>
+        <tr><td>B+</td><td>7/8</td></tr>
+        <tr><td>Jack Frost</td><td>11/7</td></tr>
+        <tr><td>Jedi Mind Fuck</td><td>28/7</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Backup Plates -->
+    <table>
+      <thead>
+        <tr><th colspan="2">Backup Plates</th></tr>
+        <tr><th>Strain</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Bluey Viton</td><td>4/7</td></tr>
+        <tr><td>Bluey Viton</td><td>30/7</td></tr>
+        <tr><td>Bluey Viton</td><td>30/7</td></tr>
+        <tr><td>Bluey Viton</td><td>30/7</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Growing Well -->
+    <table>
+      <thead>
+        <tr><th colspan="2">Growing Well</th></tr>
+        <tr><th>Strain</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Bluey Viton</td><td>5/8</td></tr>
+        <tr><td>Bluey Viton</td><td>5/8</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Good to Go -->
+    <table>
+      <thead>
+        <tr><th colspan="2">Good to Go</th></tr>
+        <tr><th>Strain</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>B+</td><td>8/6</td></tr>
+        <tr><td>B+</td><td>11/7</td></tr>
+        <tr><td>B+</td><td>24/7</td></tr>
+        <tr><td>B+</td><td>24/7</td></tr>
+        <tr><td>B+</td><td>24/7</td></tr>
+        <tr><td>Hillbilly Pumpkin</td><td>24/7</td></tr>
+        <tr><td>Hillbilly Pumpkin</td><td>24/7</td></tr>
+        <tr><td>El Choco</td><td>16/5</td></tr>
+        <tr><td>El Choco</td><td>21/7</td></tr>
+        <tr><td>El Choco</td><td>21/7</td></tr>
+        <tr><td>Jedi Mind Fuck</td><td>28/7</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Master Plates -->
+    <table>
+      <thead>
+        <tr><th colspan="2">Master Plates</th></tr>
+        <tr><th>Strain</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>El Choco</td><td>22/4</td></tr>
+        <tr><td>B+</td><td>25/4</td></tr>
+        <tr><td>Hillbilly Pumpkin</td><td>23/5</td></tr>
+        <tr><td>El Choco</td><td>11/7</td></tr>
+        <tr><td>Bluey Viton</td><td>30/7</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</body>
+</html>
