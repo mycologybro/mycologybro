@@ -1,21 +1,34 @@
-name: Update Runs
+name: Update Runs Data
 
 on:
-  repository_dispatch:
-    types: [update-runs]
+  workflow_dispatch:   # lets you trigger manually from GitHub if needed
+  repository_dispatch: # lets your webpage trigger updates with API calls
 
 jobs:
-  update:
+  update-data:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Update runs.json
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Update runs data
         run: |
-          echo '${{ github.event.client_payload.content }}' > runs.json
-      - name: Commit and push
+          echo "Updating runs.json..."
+          # this is where your script would update data
+          # e.g., append new run info
+
+      - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add runs.json
-          git commit -m "Update runs.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update runs data"
           git push
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
