@@ -2,49 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Run Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 20px;
-      background-color: #fdf6b2; /* light yellow */
     }
-    header {
+    h1 {
       text-align: center;
-      margin-bottom: 20px;
-    }
-    header img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    nav {
-      text-align: center;
-      margin: 20px 0;
-    }
-    nav a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #333;
-      font-weight: bold;
     }
     form {
-      margin-bottom: 20px;
+      margin: 20px 0;
       text-align: center;
-    }
-    form input {
-      margin: 5px;
-      padding: 8px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      background: white;
+      background: #fff;
     }
     th, td {
       border: 1px solid #ccc;
@@ -52,164 +30,108 @@
       text-align: center;
     }
     th {
-      background: #4caf50;
+      background: #6c7ae0;
       color: white;
     }
     tr:nth-child(even) {
       background: #f9f9f9;
     }
-    .button-bar {
-      text-align: center;
-      margin-top: 15px;
-    }
-    .button-bar button {
-      padding: 10px 15px;
-      background: #e63946;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .button-bar button:hover {
-      background: #d62828;
-    }
     canvas {
-      margin-top: 20px;
-      background: white;
-      border-radius: 8px;
-      padding: 10px;
+      margin-top: 30px;
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      height: 400px;
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <img src="images/running.png" alt="Running Tracker">
-  </header>
-
-  <nav>
-    <a href="index.html">Jars</a>
-    <a href="tubs.html">Tubs</a>
-    <a href="coin.html">Coins</a>
-<a href="agar.html">Agar</a>
-  </nav>
+  <h1>Run Tracker</h1>
 
   <form id="runForm">
     <input type="date" id="date" required>
-    <input type="number" id="distance" placeholder="Distance (km)" step="0.01" required>
-    <input type="text" id="time" placeholder="Time (mm:ss)" pattern="^[0-9]{1,2}:[0-5][0-9]$" required>
+    <input type="number" step="0.01" id="distance" placeholder="Distance (km)" required>
+    <input type="text" id="time" placeholder="Time (MM:SS)" pattern="\\d{1,2}:\\d{2}" required>
     <button type="submit">Add Run</button>
   </form>
 
-  <table id="runTable">
+  <table>
     <thead>
       <tr>
         <th>Date</th>
         <th>Distance (km)</th>
-        <th>Time (mm:ss)</th>
+        <th>Time (MM:SS)</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="runTableBody"></tbody>
   </table>
 
-  <div class="button-bar">
-    <button id="clearRuns">Clear All Runs</button>
-  </div>
-
-  <canvas id="runChart" width="400" height="200"></canvas>
+  <canvas id="runChart"></canvas>
 
   <script>
-    const runForm = document.getElementById('runForm');
-    const runTableBody = document.querySelector('#runTable tbody');
-    const ctx = document.getElementById('runChart').getContext('2d');
-    const clearButton = document.getElementById('clearRuns');
+    const username = "mycologybro"; // your GitHub username
+    const repo = "mycologybro";    // your repository name
+    const branch = "main";         // or "master" depending on repo
+    const filePath = "runs.json";
 
-    let runs = JSON.parse(localStorage.getItem('runs')) || [];
-    let chart;
-
-    // Render saved runs on page load
-    runs.forEach(r => addRunToTable(r));
-    updateChart();
-
-    runForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const date = document.getElementById('date').value;
-      const distance = parseFloat(document.getElementById('distance').value).toFixed(2); 
-      const time = document.getElementById('time').value;
-
-      const run = { date, distance, time };
-
-      // Save in array + localStorage
-      runs.push(run);
-      localStorage.setItem('runs', JSON.stringify(runs));
-
-      // Add to table
-      addRunToTable(run);
-
-      // Update chart
-      updateChart();
-
-      // Reset form
-      runForm.reset();
-    });
-
-    function addRunToTable(run) {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${run.date}</td><td>${run.distance}</td><td>${run.time}</td>`;
-      runTableBody.appendChild(row);
+    async function fetchRuns() {
+      const url = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${filePath}`;
+      const res = await fetch(url);
+      return res.ok ? res.json() : [];
     }
 
-    function timeToMinutes(timeStr) {
-      const [min, sec] = timeStr.split(':').map(Number);
-      return min + sec / 60;
-    }
+    async function renderRuns() {
+      const runs = await fetchRuns();
+      const tbody = document.getElementById("runTableBody");
+      tbody.innerHTML = "";
+      runs.forEach(run => {
+        const row = `<tr><td>${run.date}</td><td>${run.distance}</td><td>${run.time}</td></tr>`;
+        tbody.innerHTML += row;
+      });
 
-    function updateChart() {
-      if (runs.length === 0) return;
-
-      // Sort by date before charting
-      runs.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      if (chart) chart.destroy();
-
-      chart = new Chart(ctx, {
-        type: 'line',
+      // Chart data
+      const ctx = document.getElementById("runChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
         data: {
           labels: runs.map(r => r.date),
           datasets: [{
-            label: 'Time (minutes)',
-            data: runs.map(r => timeToMinutes(r.time)),
-            borderColor: 'blue',
-            backgroundColor: 'rgba(0,0,255,0.2)',
-            fill: true,
-            tension: 0.3
+            label: "Time (min)",
+            data: runs.map(r => {
+              const [m, s] = r.time.split(":").map(Number);
+              return m + s / 60;
+            }),
+            borderColor: "blue",
+            fill: false
           }]
-        },
-        options: {
-          scales: {
-            x: {
-              title: { display: true, text: 'Date' }
-            },
-            y: {
-              title: { display: true, text: 'Time (minutes)' }
-            }
-          }
         }
       });
     }
 
-    // Clear all runs
-    clearButton.addEventListener('click', function() {
-      if (confirm("Are you sure you want to clear all runs?")) {
-        runs = [];
-        localStorage.removeItem('runs');
-        runTableBody.innerHTML = "";
-        if (chart) chart.destroy();
-      }
-    });
-  </script>
+    document.getElementById("runForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const date = document.getElementById("date").value;
+      const distance = parseFloat(document.getElementById("distance").value).toFixed(2);
+      const time = document.getElementById("time").value;
 
+      const payload = {
+        event_type: "update-runs",
+        client_payload: { date, distance, time }
+      };
+
+      await fetch(`https://api.github.com/repos/${username}/${repo}/dispatches`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/vnd.github+json",
+          "Authorization": "token YOUR_PAT_HERE"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      alert("Run submitted! It may take a minute to update.");
+    });
+
+    renderRuns();
+  </script>
 </body>
 </html>
