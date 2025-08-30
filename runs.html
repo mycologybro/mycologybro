@@ -71,69 +71,22 @@
   <canvas id="runChart"></canvas>
 
   <script>
-    const username = "mycologybro"; // your GitHub username
-    const repo = "mycologybro";    // your repository name
-    const branch = "main";         // or "master" depending on repo
-    const filePath = "runs.json";
+    document.getElementById("runForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const date = document.getElementById("date").value;
+  const distance = parseFloat(document.getElementById("distance").value);
+  const time = document.getElementById("time").value;
 
-    async function fetchRuns() {
-      const url = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${filePath}`;
-      const res = await fetch(url);
-      return res.ok ? res.json() : [];
-    }
+  const res = await fetch("/.netlify/functions/addRun", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ date, distance, time }),
+  });
 
-    async function renderRuns() {
-      const runs = await fetchRuns();
-      const tbody = document.getElementById("runTableBody");
-      tbody.innerHTML = "";
-      runs.forEach(run => {
-        const row = `<tr><td>${run.date}</td><td>${run.distance}</td><td>${run.time}</td></tr>`;
-        tbody.innerHTML += row;
-      });
+  const data = await res.json();
+  alert(data.message);
+});
 
-      // Chart data
-      const ctx = document.getElementById("runChart").getContext("2d");
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: runs.map(r => r.date),
-          datasets: [{
-            label: "Time (min)",
-            data: runs.map(r => {
-              const [m, s] = r.time.split(":").map(Number);
-              return m + s / 60;
-            }),
-            borderColor: "blue",
-            fill: false
-          }]
-        }
-      });
-    }
-
-    document.getElementById("runForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const date = document.getElementById("date").value;
-      const distance = parseFloat(document.getElementById("distance").value).toFixed(2);
-      const time = document.getElementById("time").value;
-
-      const payload = {
-        event_type: "update-runs",
-        client_payload: { date, distance, time }
-      };
-
-      await fetch(`https://api.github.com/repos/${username}/${repo}/dispatches`, {
-        method: "POST",
-        headers: {
-          "Accept": "application/vnd.github+json",
-          "Authorization": "token YOUR_PAT_HERE"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      alert("Run submitted! It may take a minute to update.");
-    });
-
-    renderRuns();
   </script>
 </body>
 </html>
