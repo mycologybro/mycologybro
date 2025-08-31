@@ -77,7 +77,7 @@ document.getElementById("runForm").addEventListener("submit", async (e) => {
   const distance = parseFloat(document.getElementById("distance").value);
   const time = document.getElementById("time").value;
 
-  const res = await fetch("/.netlify/functions/addRun", {
+  const res = await fetch("/.netlify/functions/addRun.js", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ date, distance, time }),
