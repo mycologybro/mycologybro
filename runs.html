@@ -71,7 +71,7 @@
   <canvas id="runChart"></canvas>
 
   <script>
-    document.getElementById("runForm").addEventListener("submit", async (e) => {
+document.getElementById("runForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const date = document.getElementById("date").value;
   const distance = parseFloat(document.getElementById("distance").value);
@@ -86,7 +86,7 @@
   const data = await res.json();
   alert(data.message);
 });
+</script>
 
-  </script>
 </body>
 </html>
