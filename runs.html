@@ -1,129 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Run Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
       background-color: #f0f8ff;
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      margin: 20px;
       text-align: center;
     }
-    header {
-      background: url("images/running-header.png") no-repeat center;
-      background-size: cover;
-      padding: 40px;
-      color: white;
-      font-size: 2em;
-      font-weight: bold;
-    }
-    nav a {
-      margin: 10px;
-      text-decoration: none;
-      font-weight: bold;
-      color: #333;
+    header img {
+      max-width: 100%;
+      height: auto;
     }
     form {
       margin: 20px auto;
-      padding: 20px;
+      padding: 15px;
+      border: 2px solid #333;
+      border-radius: 8px;
       background: #fff;
-      border: 2px solid #ccc;
-      border-radius: 10px;
       width: 300px;
     }
-    input {
-      margin: 8px 0;
-      padding: 6px;
+    form input {
+      display: block;
+      margin: 10px auto;
+      padding: 8px;
       width: 90%;
     }
     button {
       padding: 10px 20px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
       background: #007acc;
       color: white;
-      font-weight: bold;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
     }
-    canvas {
-      margin: 30px auto;
-      display: block;
+    button:hover {
+      background: #005f99;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
       max-width: 600px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+    }
+    th {
+      background: #eee;
+    }
+    canvas {
+      margin-top: 30px;
+      max-width: 600px;
+      width: 100%;
     }
   </style>
 </head>
 <body>
-  <header>RUNNING</header>
+  <header>
+    <img src="images/running_header.png" alt="Running Tracker">
+  </header>
 
   <nav>
-    <a href="index.html">Jars</a>
-    <a href="tubs.html">Tubs</a>
-    <a href="coin.html">Coins</a>
-    <a href="runs.html">Running</a>
+    <a href="index.html">Jars</a> |
+    <a href="tubs.html">Tubs</a> |
+    <a href="coin.html">Coin</a> |
     <a href="agar.html">Agar</a>
   </nav>
 
+  <h2>Track Your Runs</h2>
+
   <form id="runForm">
-    <label>Date: <input type="date" id="date" required></label><br>
-    <label>Distance (km): <input type="number" step="0.01" id="distance" required></label><br>
-   <label>Time (mm:ss):
-  <input type="text" id="time" pattern="\d{1,2}:\d{2}" placeholder="mm:ss" required>
-</label>
-<br>
+    <input type="date" id="date" required>
+    <input type="number" id="distance" step="0.01" placeholder="Distance (km)" required>
+    <input type="text" id="time" pattern="^[0-9]{1,2}:[0-5][0-9]$" placeholder="Time (MM:SS)" required>
     <button type="submit">Add Run</button>
   </form>
 
+  <table id="runsTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Distance (km)</th>
+        <th>Time (MM:SS)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
   <canvas id="runsChart"></canvas>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const form = document.getElementById("runForm");
-    const ctx = document.getElementById("runsChart").getContext("2d");
+    const tableBody = document.querySelector("#runsTable tbody");
+    const chartCtx = document.getElementById("runsChart").getContext("2d");
 
+    let chart;
     let runs = [];
-    let chart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: [],
-        datasets: [{
-          label: "Time (minutes)",
-          data: [],
-          borderColor: "blue",
-          fill: false
-        }]
-      },
-      options: {
-        scales: {
-          x: { title: { display: true, text: "Date" }},
-          y: { title: { display: true, text: "Time (minutes)" }}
-        }
-      }
-    });
-
-    function updateChart() {
-      chart.data.labels = runs.map(r => r.date);
-      chart.data.datasets[0].data = runs.map(r => r.timeMinutes);
-      chart.update();
-    }
-
-    function timeToMinutes(timeStr) {
-      const [m, s] = timeStr.split(":").map(Number);
-      return m + s / 60;
-    }
-
-    async function loadRuns() {
-      const res = await fetch("https://raw.githubusercontent.com/mycologybro/mycology-bro/main/runs.json");
-      if (!res.ok) return;
-      const data = await res.json();
-      runs = data.map(r => ({
-        ...r,
-        timeMinutes: timeToMinutes(r.time)
-      }));
-      updateChart();
-    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -131,24 +109,77 @@
       const distance = parseFloat(document.getElementById("distance").value).toFixed(2);
       const time = document.getElementById("time").value;
 
-      const run = { date, distance, time };
+      try {
+        const response = await fetch("https://mycology-bro.netlify.app/.netlify/functions/addRun", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ date, distance, time }),
+        });
 
-      const res = await fetch("/.netlify/functions/addRun", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(run)
-      });
+        const result = await response.json();
+        console.log("Server response:", result);
 
-      const data = await res.json();
-      alert(data.message || "Run submitted! Please refresh in a moment.");
-
-      runs.push({ ...run, timeMinutes: timeToMinutes(time) });
-      updateChart();
-      form.reset();
+        if (response.ok) {
+          addRow({ date, distance, time });
+          runs.push({ date, distance, time });
+          updateChart();
+          form.reset();
+        } else {
+          alert("Error: " + result.error);
+        }
+      } catch (err) {
+        console.error("Request failed:", err);
+        alert("Failed to add run.");
+      }
     });
 
-    loadRuns();
+    function addRow(run) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${run.date}</td><td>${run.distance}</td><td>${run.time}</td>`;
+      tableBody.appendChild(row);
+    }
+
+    function updateChart() {
+      const labels = runs.map(r => r.date);
+      const distances = runs.map(r => r.distance);
+      const times = runs.map(r => {
+        const [min, sec] = r.time.split(":").map(Number);
+        return min * 60 + sec;
+      });
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(chartCtx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Distance (km)",
+              data: distances,
+              borderColor: "blue",
+              fill: false,
+              yAxisID: "y1",
+            },
+            {
+              label: "Time (seconds)",
+              data: times,
+              borderColor: "red",
+              fill: false,
+              yAxisID: "y2",
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y1: { type: "linear", position: "left", title: { display: true, text: "Distance (km)" } },
+            y2: { type: "linear", position: "right", title: { display: true, text: "Time (s)" } },
+          },
+        },
+      });
+    }
   </script>
 </body>
 </html>
+
 
