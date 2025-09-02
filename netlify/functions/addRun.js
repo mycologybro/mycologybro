@@ -1,71 +1,55 @@
-// netlify/functions/addRun.js
-import fetch from "node-fetch";
+const fs = require("fs");
+const path = require("path");
 
-export async function handler(event) {
+exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method Not Allowed" }),
+    };
   }
 
   try {
-    const { date, distance, time } = JSON.parse(event.body);
+    const data = JSON.parse(event.body);
+    const { date, distance, time } = data;
 
-    // Repo details
-    const owner = "mycologybro";
-    const repo = "mycology-bro";
-    const filePath = "runs.json";
-
-    const githubToken = process.env.GITHUB_TOKEN;
-
-    // Get current file
-    const getResponse = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-      {
-        headers: {
-          Authorization: `token ${githubToken}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-      }
-    );
-
-    if (!getResponse.ok) {
-      throw new Error("Failed to fetch runs.json: " + (await getResponse.text()));
+    if (!date || !distance || !time) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing required fields" }),
+      };
     }
 
-    const fileData = await getResponse.json();
-    const content = Buffer.from(fileData.content, "base64").toString();
-    let runs = content ? JSON.parse(content) : [];
+    // File path (saved inside Netlify build folder)
+    const filePath = path.join(__dirname, "runs.json");
 
+    // Read existing data or create new array
+    let runs = [];
+    if (fs.existsSync(filePath)) {
+      const fileData = fs.readFileSync(filePath, "utf8");
+      runs = JSON.parse(fileData || "[]");
+    }
+
+    // Add new run
     runs.push({ date, distance, time });
 
-    const updatedContent = Buffer.from(JSON.stringify(runs, null, 2)).toString("base64");
-
-    // Commit update
-    const putResponse = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `token ${githubToken}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-        body: JSON.stringify({
-          message: "Add new run",
-          content: updatedContent,
-          sha: fileData.sha,
-        }),
-      }
-    );
-
-    if (!putResponse.ok) {
-      throw new Error("Failed to update runs.json: " + (await putResponse.text()));
-    }
+    // Save back to JSON
+    fs.writeFileSync(filePath, JSON.stringify(runs, null, 2));
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Run successfully added!" }),
+      body: JSON.stringify({
+        success: true,
+        message: "Run added successfully",
+        run: { date, distance, time },
+      }),
     };
-  } catch (err) {
-    console.error(err);
-    return { statusCode: 500, body: "Error: " + err.message };
+  } catch (error) {
+    console.error("Error saving run:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal Server Error" }),
+    };
   }
-}
+};
+
