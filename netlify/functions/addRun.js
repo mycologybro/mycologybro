@@ -1,10 +1,22 @@
-const fs = require("fs");
-const path = require("path");
+const headers = {
+  "Access-Control-Allow-Origin": "https://mycologybro.github.io",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS"
+};
 
 exports.handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers,
+      body: "OK"
+    };
+  }
+
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
+      headers,
       body: JSON.stringify({ error: "Method Not Allowed" }),
     };
   }
@@ -16,28 +28,14 @@ exports.handler = async (event) => {
     if (!date || !distance || !time) {
       return {
         statusCode: 400,
+        headers,
         body: JSON.stringify({ error: "Missing required fields" }),
       };
     }
 
-    // File path (saved inside Netlify build folder)
-    const filePath = path.join(__dirname, "runs.json");
-
-    // Read existing data or create new array
-    let runs = [];
-    if (fs.existsSync(filePath)) {
-      const fileData = fs.readFileSync(filePath, "utf8");
-      runs = JSON.parse(fileData || "[]");
-    }
-
-    // Add new run
-    runs.push({ date, distance, time });
-
-    // Save back to JSON
-    fs.writeFileSync(filePath, JSON.stringify(runs, null, 2));
-
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify({
         success: true,
         message: "Run added successfully",
@@ -45,11 +43,10 @@ exports.handler = async (event) => {
       }),
     };
   } catch (error) {
-    console.error("Error saving run:", error);
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({ error: "Internal Server Error" }),
     };
   }
 };
-
