@@ -1,3 +1,5 @@
+const { Octokit } = require("@octokit/rest");
+
 const headers = {
   "Access-Control-Allow-Origin": "https://mycologybro.github.io",
   "Access-Control-Allow-Headers": "Content-Type",
@@ -9,7 +11,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers,
-      body: "OK"
+      body: "OK",
     };
   }
 
@@ -33,20 +35,61 @@ exports.handler = async (event) => {
       };
     }
 
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    const owner = "mycologybro";
+    const repo = "mycologybro";
+    const path = "runs.json";
+
+    // Fetch current runs.json
+    let file;
+    try {
+      file = await octokit.repos.getContent({ owner, repo, path });
+    } catch (err) {
+      if (err.status === 404) {
+        file = null; // File doesn’t exist yet
+      } else {
+        throw err;
+      }
+    }
+
+    let runs = [];
+    let sha;
+
+    if (file) {
+      sha = file.data.sha;
+      const content = Buffer.from(file.data.content, "base64").toString();
+      runs = JSON.parse(content);
+    }
+
+    // Add new run
+    runs.push({ date, distance, time });
+
+    // Save back to GitHub
+    await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path,
+      message: "Add new run",
+      content: Buffer.from(JSON.stringify(runs, null, 2)).toString("base64"),
+      sha,
+    });
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        message: "Run added successfully",
+        message: "Run saved to GitHub",
         run: { date, distance, time },
       }),
     };
   } catch (error) {
+    console.error("Error in addRun function:", error);
+
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "Internal Server Error" }),
+      body: JSON.stringify({ error: "Internal Server Error", details: error.message }),
     };
   }
 };
