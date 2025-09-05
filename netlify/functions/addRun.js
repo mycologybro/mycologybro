@@ -8,11 +8,7 @@ const headers = {
 
 exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers,
-      body: "OK",
-    };
+    return { statusCode: 200, headers, body: "OK" };
   }
 
   if (event.httpMethod !== "POST") {
@@ -64,32 +60,51 @@ exports.handler = async (event) => {
     // Add new run
     runs.push({ date, distance, time });
 
-    // Save back to GitHub
-    await octokit.repos.createOrUpdateFileContents({
-      owner,
-      repo,
-      path,
-      message: "Add new run",
-      content: Buffer.from(JSON.stringify(runs, null, 2)).toString("base64"),
-      sha,
-    });
+    // Save back to GitHub with debug logging
+    try {
+      const response = await octokit.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path,
+        message: "Add new run",
+        content: Buffer.from(JSON.stringify(runs, null, 2)).toString("base64"),
+        sha,
+        branch: "main", // your default branch
+      });
 
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        message: "Run saved to GitHub",
-        run: { date, distance, time },
-      }),
-    };
+      console.log("GitHub API response:", response.status, response.data);
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          message: "Run saved to GitHub",
+          run: { date, distance, time },
+        }),
+      };
+    } catch (saveError) {
+      console.error("GitHub save failed:", saveError);
+
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          error: "GitHub save failed",
+          details: saveError.message,
+        }),
+      };
+    }
   } catch (error) {
     console.error("Error in addRun function:", error);
 
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "Internal Server Error", details: error.message }),
+      body: JSON.stringify({
+        error: "Internal Server Error",
+        details: error.message,
+      }),
     };
   }
 };
