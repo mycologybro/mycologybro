@@ -15,7 +15,7 @@
     }
     table {
       width: 50%;
-       margin: 40px auto 0 auto;
+      margin: 40px auto 0 auto;
       border-collapse: collapse;
       background-color: white;
     }
@@ -31,28 +31,36 @@
     tr:nth-child(even) {
       background-color: #f2f2f2;
     }
+    canvas {
+      display: block;
+      margin: 30px auto;
+      max-width: 700px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body>
 
   <img src="images/coinbutton.jpeg" alt="coins" style="display: block; margin: 0 auto; max-width: 300px;">
 
-<a href="tubs.html">
+  <a href="tubs.html">
      <img src="images/tubsbutton.png" alt="Back to tubs" width="200" height="50">
-</a>
+  </a>
   
- <a href="index.html">
+  <a href="index.html">
     <img src="images/jarsbutton.png" alt="Back to Jars" width="200" height="50">
   </a> 
 
-<a href="runs.html">
-     <img src="images/running.png" alt="Back to tubs" width="200" height="50">
-</a>
+  <a href="runs.html">
+     <img src="images/running.png" alt="Back to running" width="200" height="50">
+  </a>
 
-<a href="agar.html">
-     <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
-
-</a>
+  <a href="agar.html">
+     <img src="images/agar_header.png" alt="Back to agar" width="200" height="50">
+  </a>
 
   <table>
     <thead>
@@ -62,45 +70,74 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>2942</td>
-        <td>758</td>
-      </tr>
-      <tr>
-        <td>3119</td>
-        <td>838</td>
-      </tr>
-      <tr>
-        <td>3132</td>
-        <td>870</td>
-      </tr>
-      <tr>
-        <td>3119</td>
-        <td>870</td>
-      </tr>
-      <tr>
-        <td>3350</td>
-        <td>970</td>
-      </tr>
-      <tr>
-        <td>3575</td>
-        <td>1167</td>
-      </tr>
-       <tr>
-        <td>3736</td>
-        <td>1265</td>
-      </tr>
-       <tr>
-        <td>4109</td>
-        <td>1603</td>
-      </tr>
-       <tr>
-        <td>4429</td>
-        <td>1906</td>
-      </tr>
+      <tr><td>2942</td><td>758</td></tr>
+      <tr><td>3119</td><td>838</td></tr>
+      <tr><td>3132</td><td>870</td></tr>
+      <tr><td>3119</td><td>870</td></tr>
+      <tr><td>3350</td><td>970</td></tr>
+      <tr><td>3575</td><td>1167</td></tr>
+      <tr><td>3736</td><td>1265</td></tr>
+      <tr><td>4109</td><td>1603</td></tr>
+      <tr><td>4429</td><td>1906</td></tr>
     </tbody>
   </table>
 
+  <h2 style="text-align:center; margin-top:20px;">Coin Totals Over Time</h2>
+  <canvas id="coinChart" width="400" height="200"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const rows = document.querySelectorAll("table tbody tr");
+    let myValues = [];
+    let dadValues = [];
+    let labels = [];
+
+    rows.forEach((row, index) => {
+      const cells = row.querySelectorAll("td");
+      if (cells.length === 2) {
+        myValues.push(parseInt(cells[0].textContent.trim(), 10));
+        dadValues.push(parseInt(cells[1].textContent.trim(), 10));
+        labels.push("Entry " + (index + 1));
+      }
+    });
+
+    const ctx = document.getElementById("coinChart").getContext("2d");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Mine",
+            data: myValues,
+            borderColor: "red",
+            backgroundColor: "rgba(255,0,0,0.2)",
+            tension: 0.3
+          },
+          {
+            label: "Dad's",
+            data: dadValues,
+            borderColor: "blue",
+            backgroundColor: "rgba(0,0,255,0.2)",
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "top" }
+        },
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+  </script>
+
 </body>
 </html>
+
 
