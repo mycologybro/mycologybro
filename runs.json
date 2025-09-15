@@ -1,42 +1,42 @@
 [
   {
     "date": "2025-08-05",
-    "distance": "1.82",
-    "time": "14:54"
+    "distance": "1",
+    "time": "12:54"
   },
   {
     "date": "2025-08-06",
-    "distance": "1.81",
-    "time": "14:39"
+    "distance": "1",
+    "time": "12:39"
   },
   {
     "date": "2025-08-11",
-    "distance": "1.84",
-    "time": "13:06"
+    "distance": "1",
+    "time": "11:06"
   },
   {
     "date": "2025-08-12",
-    "distance": "1.81",
-    "time": "12:07"
+    "distance": "1",
+    "time": "10:07"
   },
   {
     "date": "2025-09-03",
-    "distance": "1.81",
-    "time": "11:50"
+    "distance": "1",
+    "time": "9:50"
   },
   {
     "date": "2025-09-04",
-    "distance": "1.82",
-    "time": "11:45"
+    "distance": "1",
+    "time": "9:45"
   },
   {
     "date": "2025-09-09",
-    "distance": "1.80",
-    "time": "11:05"
+    "distance": "1",
+    "time": "9:05"
   },
   {
     "date": "2025-09-15",
-    "distance": "1.82",
-    "time": "10:48"
+    "distance": "1",
+    "time": "8:48"
   }
 ]
