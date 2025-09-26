@@ -130,23 +130,23 @@
   
   <a href="tubs.html">
      <img src="images/tubs.png" alt="Back to tubs" width="200" height="50">
-</a>
+  </a>
   
   <a href="coin.html">
      <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
-</a>
+  </a>
 
-<a href="runs.html">
+  <a href="runs.html">
      <img src="images/running.png" alt="Back to tubs" width="200" height="50">
-</a>
+  </a>
 
-<a href="agar.html">
+  <a href="agar.html">
      <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
-</a>
+  </a>
+  
   <a href="recipes.html">
      <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
-</a>
-
+  </a>
 
   <div class="card">
     <form id="runForm" autocomplete="off">
@@ -217,14 +217,46 @@
   }
 
   function renderChart(arr) {
-    const sorted=arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
-    const labels=sorted.map(r=>r.date);
-    const data=sorted.map(r=>timeToMinutes(r.time));
+    const sorted = arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const labels = sorted.map(r=>r.date);
+
+    // pace in minutes per mile
+    const data = sorted.map(r => {
+      const minutes = timeToMinutes(r.time);
+      return minutes / r.distance;
+    });
+
     if(chart) chart.destroy();
-    chart=new Chart(ctx,{
+    chart = new Chart(ctx,{
       type:"line",
-      data:{labels,datasets:[{label:"Time (minutes)",data,borderColor:"rgb(20,110,220)",backgroundColor:"rgba(20,110,220,0.15)",tension:0.25,pointRadius:4,pointHoverRadius:6,fill:false}]},
-      options:{scales:{x:{title:{display:true,text:"Date"}},y:{title:{display:true,text:"Time (minutes)"}}}}
+      data:{
+        labels,
+        datasets:[{
+          label:"Pace (min/mile)",
+          data,
+          borderColor:"rgb(20,110,220)",
+          backgroundColor:"rgba(20,110,220,0.15)",
+          tension:0.25,
+          pointRadius:4,
+          pointHoverRadius:6,
+          fill:false
+        }]
+      },
+      options:{
+        scales:{
+          x:{title:{display:true,text:"Date"}},
+          y:{
+            title:{display:true,text:"Pace (mm:ss per mile)"},
+            ticks:{
+              callback:function(value){
+                const minutes = Math.floor(value);
+                const seconds = Math.round((value - minutes) * 60);
+                return `${minutes}:${seconds.toString().padStart(2,"0")}`;
+              }
+            }
+          }
+        }
+      }
     });
   }
 
@@ -266,5 +298,6 @@
   </script>
 </body>
 </html>
+
 
 
