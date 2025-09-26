@@ -234,12 +234,15 @@
         datasets:[{
           label:"Pace (min/mile)",
           data,
-          borderColor:"rgb(20,110,220)",
-          backgroundColor:"rgba(20,110,220,0.15)",
           tension:0.25,
           pointRadius:4,
           pointHoverRadius:6,
-          fill:false
+          fill:false,
+          // dynamic coloring
+          segment: {
+            borderColor: ctx => ctx.p0.parsed.y < 10 ? "green" : "red"
+          },
+          pointBackgroundColor: ctx => ctx.parsed.y < 10 ? "green" : "red"
         }]
       },
       options:{
@@ -298,6 +301,3 @@
   </script>
 </body>
 </html>
-
-
-
