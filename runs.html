@@ -16,6 +16,7 @@
       text-align: center;
     }
 
+    /* Header banner */
     .hero {
       width: 100%;
       height: 160px;
@@ -46,6 +47,7 @@
       text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
     }
 
+    /* Nav */
     nav {
       margin: 14px 0;
       display: flex;
@@ -63,6 +65,7 @@
       font-weight: 600;
     }
 
+    /* Form card */
     .card {
       max-width: 760px;
       margin: 14px auto;
@@ -91,6 +94,7 @@
       font-weight:700;
     }
 
+    /* Table & chart */
     table {
       width:100%;
       border-collapse: collapse;
@@ -123,11 +127,26 @@
   <a href="index.html" style="margin-top: 30px; display: inline-block;">
     <img src="images/spawnjars.png" alt="Back to Jars" width="200" height="50">
   </a>
-  <a href="tubs.html"><img src="images/tubs.png" width="200" height="50"></a>
-  <a href="coin.html"><img src="images/coinbutton.JPEG" width="200" height="50"></a>
-  <a href="runs.html"><img src="images/running.png" width="200" height="50"></a>
-  <a href="agar.html"><img src="images/agar_header.png" width="200" height="50"></a>
-  <a href="recipes.html"><img src="images/recipes.jpg" width="200" height="50"></a>
+  
+  <a href="tubs.html">
+     <img src="images/tubs.png" alt="Back to tubs" width="200" height="50">
+  </a>
+  
+  <a href="coin.html">
+     <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
+  </a>
+
+  <a href="runs.html">
+     <img src="images/running.png" alt="Back to tubs" width="200" height="50">
+  </a>
+
+  <a href="agar.html">
+     <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
+  </a>
+  
+  <a href="recipes.html">
+     <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
+  </a>
 
   <div class="card">
     <form id="runForm" autocomplete="off">
@@ -198,36 +217,47 @@
   }
 
   function renderChart(arr) {
-    const sorted=arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
-    const labels=sorted.map(r=>r.date);
-    const paceData=sorted.map(r=>timeToMinutes(r.time)/r.distance); // minutes per mile
+    const sorted = arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const labels = sorted.map(r=>r.date);
+
+    // pace in minutes per mile
+    const data = sorted.map(r => {
+      const minutes = timeToMinutes(r.time);
+      return minutes / r.distance;
+    });
 
     if(chart) chart.destroy();
-    chart=new Chart(ctx,{
+    chart = new Chart(ctx,{
       type:"line",
       data:{
         labels,
         datasets:[{
           label:"Pace (min/mile)",
-          data:paceData,
-          borderColor: ctx => {
-            const v = ctx.raw;
-            return v > 10 ? "red" : "green";
-          },
-          backgroundColor: ctx => {
-            const v = ctx.raw;
-            return v > 10 ? "rgba(255,0,0,0.2)" : "rgba(0,200,0,0.2)";
-          },
+          data,
           tension:0.25,
           pointRadius:4,
           pointHoverRadius:6,
-          fill:true
+          fill:false,
+          // dynamic coloring
+          segment: {
+            borderColor: ctx => ctx.p0.parsed.y < 10 ? "green" : "red"
+          },
+          pointBackgroundColor: ctx => ctx.parsed.y < 10 ? "green" : "red"
         }]
       },
       options:{
         scales:{
           x:{title:{display:true,text:"Date"}},
-          y:{title:{display:true,text:"Minutes per Mile"}}
+          y:{
+            title:{display:true,text:"Pace (mm:ss per mile)"},
+            ticks:{
+              callback:function(value){
+                const minutes = Math.floor(value);
+                const seconds = Math.round((value - minutes) * 60);
+                return `${minutes}:${seconds.toString().padStart(2,"0")}`;
+              }
+            }
+          }
         }
       }
     });
@@ -271,4 +301,3 @@
   </script>
 </body>
 </html>
-
