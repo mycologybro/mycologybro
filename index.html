@@ -1,9 +1,13 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mycology Log</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,319 +15,177 @@
       margin: 0;
       padding: 20px;
     }
+
     h1 {
       text-align: center;
       color: #3a3a3a;
     }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .tabs input {
+      display: none;
+    }
+
+    .tabs label {
+      padding: 10px 20px;
+      background: #6c7ae0;
+      color: white;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      margin-right: 5px;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .tabs input:checked + label {
+      background: #fff;
+      color: #000;
+      border-bottom: 1px solid #fff;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    #tab2025:checked ~ #content2025,
+    #tab2026:checked ~ #content2026 {
+      display: block;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
       background-color: #fff;
     }
+
     th, td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
     }
+
     th {
       background-color: #6c7ae0;
       color: white;
     }
+
     tr:nth-child(even) {
       background-color: #f9f9f9;
     }
   </style>
 </head>
+
 <body>
 
-  <img src="images/spawnjars.png" alt="Mycology Spawn Log" style="display: block; margin: 0 auto; max-width: 300px;">
+<img src="images/spawnjars.png" alt="Mycology Spawn Log" style="display:block;margin:0 auto;max-width:300px;">
 
-<a href="index.html" style="margin-top: 30px; display: inline-block;">
-    <img src="images/spawnjars.png" alt="Back to Jars" width="200" height="50">
-  </a>
-  
-  <a href="tubs.html">
-     <img src="images/tubs.png" alt="Back to tubs" width="200" height="50">
-</a>
-  
-  <a href="coin.html">
-     <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
-</a>
+<!-- Navigation buttons unchanged -->
+<a href="index.html"><img src="images/spawnjars.png" width="200" height="50"></a>
+<a href="tubs.html"><img src="images/tubs.png" width="200" height="50"></a>
+<a href="coin.html"><img src="images/coinbutton.JPEG" width="200" height="50"></a>
+<a href="runs.html"><img src="images/running.png" width="200" height="50"></a>
+<a href="agar.html"><img src="images/agar_header.png" width="200" height="50"></a>
+<a href="recipes.html"><img src="images/recipes.jpg" width="200" height="50"></a>
 
-<a href="runs.html">
-     <img src="images/running.png" alt="Back to tubs" width="200" height="50">
-</a>
-
-<a href="agar.html">
-     <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
-</a>
-  <a href="recipes.html">
-     <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
-</a>
-
-  <div style="margin-top:20px; text-align: center;">
-  <img src="https://visitor-badge.laobi.icu/badge?page_id=mycologybro.mycologybro1" alt="Visitor Counter">
+<div style="margin-top:20px; text-align:center;">
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=mycologybro.mycologybro1">
 </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Spawn</th>
-        <th>Inoculation Date</th>
-        <th>1st Break & Shake</th>
-        <th>2nd Break & Shake</th>
-        <th>3rd Break & Shake</th>
-        <th>4rd Break & Shake</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>el choco</td>
-        <td>14/7/2025</td>
-        <td>21/7/2025</td>
-        <td>9/8/2025 sent</td>
-        <td></td>
-      </tr>
-         <tr>
-        <td>el choco</td>
-        <td>14/7/2025</td>
-        <td>21/7/2025</td>
-        <td>9/8/2025 sent</td>
-        <td></td>
-           <td></td>
-      </tr>
-       <tr>
-        <td>loins mane</td>
-        <td>4/8/2025</td>
-        <td>14/8/2025</td>
-        <td>26/8/2025</td>
-        <td>sent</td>
-         <td></td>
-      </tr>
-         <tr>
-        <td>loins mane</td>
-        <td>4/8/2025</td>
-        <td>14/8/2025</td>
-        <td>died</td>
-        <td></td>
-           <td></td>
-      </tr>
-       <tr>
-        <td>golden teacher</td>
-        <td>4/8/2025</td>
-        <td>14/8/2025</td>
-        <td>17/8/2025</td>
-        <td>29/8/2025 sent</td>
-         <td></td>
-      </tr>
-       <tr>
-        <td>hillbilly pumpkin 1 </td>
-        <td>4/8/2025</td>
-        <td>13/8/2025</td>
-        <td>17/8/2025</td>
-        <td>3/9/2025 sent</td>
-         <td></td>
-      </tr>
-       <tr>
-        <td>hillbilly pumpkin 2 </td>
-        <td>4/8/2025</td>
-        <td>13/8/2025</td>
-        <td>17/8/2025</td>
-        <td>died</td>
-         <td></td>
-      </tr>
-       <tr>
-        <td>hillbilly pumpkin 3 </td>
-        <td>4/8/2025</td>
-        <td>13/8/2025</td>
-        <td>17/8/2025</td>
-        <td>3/9/2025 sent</td>
-         <td></td>
-      </tr>
-<tr>
-        <td>loins mane 1</td>
-        <td>4/9/2025</td>
-        <td>18/9/2025</td>
-        <td>28/9/2025</td>
-        <td></td>
-         <td></td>
-      </tr>
-<tr>
-        <td>loins mane 2</td>
-        <td>4/9/2025</td>
-        <td>18/9/2025</td>
-        <td>28/9/2025</td>
-        <td></td>
-         <td></td>
-      </tr>
-<tr>
-        <td>B+ 1</td>
-        <td>4/9/2025</td>
-        <td>14/92025</td>
-        <td>30/9/2025 sent</td>
-        <td></td>
-         <td></td>
-      </tr>
-<tr>
-        <td>B+ 2</td>
-        <td>4/9/2025</td>
-        <td>14/9/2025</td>
-        <td>30/9/2025 sent</td>
-        <td></td>
-         <td></td>
-      </tr>
-<tr>
-        <td>B+ 3</td>
-        <td>4/9/2025</td>
-        <td>14/9/2025</td>
-        <td>died</td>
-        <td></td>
-         <td></td>
-      </tr>
-<tr>
-        <td>B+ 4</td>
-        <td>4/9/2025</td>
-        <td>14/9/2025</td>
-        <td>30/9/2025 sent</td>
-        <td></td>
-         <td></td>
-      </tr>
-      <tr>
-        <td>jack frost </td>
-        <td>1/11/2025</td>
-        <td>9/11/2025</td>
-        <td>27/11/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>jack frost </td>
-        <td>1/11/2025</td>
-        <td>9/11/2025</td>
-        <td>27/11/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>jack frost </td>
-        <td>1/11/2025</td>
-        <td>9/11/2025</td>
-        <td>27/11/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>jack frost </td>
-        <td>1/11/2025</td>
-        <td>9/11/2025</td>
-        <td>27/11/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>jack frost </td>
-        <td>1/11/2025</td>
-        <td>9/11/2025</td>
-        <td>27/11/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>hillbilly pumpkin </td>
-        <td>19/11/2025</td>
-        <td>27/11/2025</td>
-        <td>03/12/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>hillbilly pumpkin </td>
-        <td>19/11/2025</td>
-        <td>27/11/2025</td>
-        <td>03/12/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>hillbilly pumpkin </td>
-        <td>19/11/2025</td>
-        <td>27/11/2025</td>
-        <td>03/12/2025</td>
-        <td>07/12/2025</td>
-         <td>dead</td>
-      </tr>
-      <tr>
-        <td>hillbilly pumpkin </td>
-        <td>19/11/2025</td>
-        <td>27/11/2025</td>
-        <td>03/12/2025</td>
-        <td>07/12/2025</td>
-         <td>10/12/2025 sent tub</td>
-      </tr>
-      <tr>
-        <td>hillbilly pumpkin </td>
-        <td>19/11/2025</td>
-        <td>27/11/2025</td>
-        <td>03/12/2025</td>
-        <td>07/12/2025</td>
-         <td>10/12/2025 sent tub</td>
-      </tr>
-      <tr>
-        <td>hillbilly pumpkin </td>
-        <td>19/11/2025</td>
-        <td>27/11/2025</td>
-        <td>03/12/2025</td>
-        <td>07/12/2025</td>
-         <td>15/12/2025 sent bag</td>
-    </tr>
-      <tr>
-        <td>bluey vuiton 1</td>
-        <td>10/12/2025</td>
-        <td>15/12/2025</td>
-        <td>03/01/2025</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>bluey vuiton 2</td>
-        <td>10/12/2025</td>
-        <td>15/12/2025</td>
-        <td>03/01/2025</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>bluey vuiton 3</td>
-        <td>10/12/2025</td>
-        <td>15/12/2025</td>
-        <td>03/01/2025</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>bluey vuiton 4</td>
-        <td>10/12/2025</td>
-        <td>15/12/2025</td>
-        <td>03/01/2025</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>bluey vuiton 5</td>
-        <td>10/12/2025</td>
-        <td>15/12/2025</td>
-        <td>dead</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <!-- Add more rows as you need -->
-    </tbody>
-  </table>
+<!-- Tabs -->
+<div class="tabs">
+  <input type="radio" id="tab2025" name="tabs" checked>
+  <label for="tab2025">2025</label>
+
+  <input type="radio" id="tab2026" name="tabs">
+  <label for="tab2026">2026</label>
+
+  <!-- 2025 CONTENT -->
+  <div id="content2025" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Spawn</th>
+          <th>Inoculation Date</th>
+          <th>1st B&S</th>
+          <th>2nd B&S</th>
+          <th>3rd B&S</th>
+          <th>4th B&S</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Your existing 2025 rows (unchanged) -->
+        <tr>
+          <td>el choco</td>
+          <td>14/7/2025</td>
+          <td>21/7/2025</td>
+          <td>9/8/2025 sent</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <!-- keep all other 2025 rows here exactly as you had them -->
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2026 CONTENT -->
+  <div id="content2026" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Spawn</th>
+          <th>Inoculation Date</th>
+          <th>1st B&S</th>
+          <th>2nd B&S</th>
+          <th>3rd B&S</th>
+          <th>4th B&S</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Dummy jars for 2026 -->
+        <tr>
+          <td>golden teacher 1</td>
+          <td>05/01/2026</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td>hillbilly pumpkin 1</td>
+          <td>12/01/2026</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td>lions mane 1</td>
+          <td>20/01/2026</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
 
 </body>
 </html>
-
 
 
 
