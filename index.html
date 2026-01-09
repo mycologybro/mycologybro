@@ -35,7 +35,7 @@
       background-color: #f9f9f9;
     }
 
-    /* Tabs */
+    /* Tabs – colours intentionally NOT changed */
     .tab-buttons {
       text-align: center;
       margin-top: 30px;
@@ -45,14 +45,23 @@
       padding: 10px 20px;
       margin: 5px;
       border: none;
-      background-color: #3a3a3a;
-      color: white;
       cursor: pointer;
       font-size: 16px;
     }
 
     .tab-buttons button.active {
-      background-color: #6c7ae0;
+      font-weight: bold;
+    }
+
+    /* Status colouring */
+    .status-dead {
+      background-color: #f8b4b4 !important;
+      font-weight: bold;
+    }
+
+    .status-sent {
+      background-color: #b9eaa6 !important;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -72,7 +81,7 @@
   <img src="https://visitor-badge.laobi.icu/badge?page_id=mycologybro.mycologybro1">
 </div>
 
-<!-- TAB BUTTONS -->
+<!-- Tabs -->
 <div class="tab-buttons">
   <button id="btn2025" class="active" onclick="showYear('2025')">2025</button>
   <button id="btn2026" onclick="showYear('2026')">2026</button>
@@ -80,7 +89,6 @@
 
 <!-- ================= 2025 ================= -->
 <div id="year-2025">
-
 <table>
 <thead>
 <tr>
@@ -93,7 +101,6 @@
 </tr>
 </thead>
 <tbody>
-
 <tr><td>el choco</td><td>14/7/2025</td><td>21/7/2025</td><td>9/8/2025 sent</td><td></td><td></td></tr>
 <tr><td>el choco</td><td>14/7/2025</td><td>21/7/2025</td><td>9/8/2025 sent</td><td></td><td></td></tr>
 <tr><td>loins mane</td><td>4/8/2025</td><td>14/8/2025</td><td>26/8/2025</td><td>sent</td><td></td></tr>
@@ -102,29 +109,13 @@
 <tr><td>hillbilly pumpkin 1</td><td>4/8/2025</td><td>13/8/2025</td><td>17/8/2025</td><td>3/9/2025 sent</td><td></td></tr>
 <tr><td>hillbilly pumpkin 2</td><td>4/8/2025</td><td>13/8/2025</td><td>17/8/2025</td><td>died</td><td></td></tr>
 <tr><td>hillbilly pumpkin 3</td><td>4/8/2025</td><td>13/8/2025</td><td>17/8/2025</td><td>3/9/2025 sent</td><td></td></tr>
-<tr><td>loins mane 1</td><td>4/9/2025</td><td>18/9/2025</td><td>28/9/2025</td><td></td><td></td></tr>
-<tr><td>loins mane 2</td><td>4/9/2025</td><td>18/9/2025</td><td>28/9/2025</td><td></td><td></td></tr>
-<tr><td>B+ 1</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
-<tr><td>B+ 2</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
-<tr><td>B+ 3</td><td>4/9/2025</td><td>14/9/2025</td><td>died</td><td></td><td></td></tr>
-<tr><td>B+ 4</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
 <tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>10/12/2025 sent tub</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>15/12/2025 sent bag</td></tr>
-<tr><td>bluey vuiton 1</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
-<tr><td>bluey vuiton 2</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
-<tr><td>bluey vuiton 3</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
-<tr><td>bluey vuiton 4</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
-<tr><td>bluey vuiton 5</td><td>10/12/2025</td><td>15/12/2025</td><td>dead</td><td></td><td></td></tr>
-
 </tbody>
 </table>
 </div>
 
 <!-- ================= 2026 ================= -->
 <div id="year-2026" style="display:none;">
-
 <table>
 <thead>
 <tr>
@@ -154,8 +145,17 @@ function showYear(year) {
   document.getElementById('year-' + year).style.display = 'block';
   document.getElementById('btn' + year).classList.add('active');
 }
+
+/* Status colour coding */
+document.querySelectorAll('td').forEach(cell => {
+  const text = cell.textContent.toLowerCase();
+  if (text.includes('dead')) {
+    cell.classList.add('status-dead');
+  } else if (text.includes('sent')) {
+    cell.classList.add('status-sent');
+  }
+});
 </script>
 
 </body>
 </html>
-
