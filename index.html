@@ -105,4 +105,56 @@
 <tr><td>loins mane 1</td><td>4/9/2025</td><td>18/9/2025</td><td>28/9/2025</td><td></td><td></td></tr>
 <tr><td>loins mane 2</td><td>4/9/2025</td><td>18/9/2025</td><td>28/9/2025</td><td></td><td></td></tr>
 <tr><td>B+ 1</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
-<tr><td>B+ 2</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><
+<tr><td>B+ 2</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
+<tr><td>B+ 3</td><td>4/9/2025</td><td>14/9/2025</td><td>died</td><td></td><td></td></tr>
+<tr><td>B+ 4</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
+<tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
+<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>dead</td></tr>
+<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>10/12/2025 sent tub</td></tr>
+<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>15/12/2025 sent bag</td></tr>
+<tr><td>bluey vuiton 1</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
+<tr><td>bluey vuiton 2</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
+<tr><td>bluey vuiton 3</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
+<tr><td>bluey vuiton 4</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td></td><td></td></tr>
+<tr><td>bluey vuiton 5</td><td>10/12/2025</td><td>15/12/2025</td><td>dead</td><td></td><td></td></tr>
+
+</tbody>
+</table>
+</div>
+
+<!-- ================= 2026 ================= -->
+<div id="year-2026" style="display:none;">
+
+<table>
+<thead>
+<tr>
+<th>Spawn</th>
+<th>Inoculation Date</th>
+<th>1st Break & Shake</th>
+<th>2nd Break & Shake</th>
+<th>3rd Break & Shake</th>
+<th>4rd Break & Shake</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>golden teacher 1</td><td>05/01/2026</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>hillbilly pumpkin 1</td><td>12/01/2026</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>lions mane 1</td><td>20/01/2026</td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<script>
+function showYear(year) {
+  document.getElementById('year-2025').style.display = 'none';
+  document.getElementById('year-2026').style.display = 'none';
+  document.getElementById('btn2025').classList.remove('active');
+  document.getElementById('btn2026').classList.remove('active');
+
+  document.getElementById('year-' + year).style.display = 'block';
+  document.getElementById('btn' + year).classList.add('active');
+}
+</script>
+
+</body>
+</html>
