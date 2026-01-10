@@ -3,83 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <title>Tubs</title>
+
   <style>
-        .text-box { 
-            background-color: lightyellow; /* background inside the box */
-            border: 2px solid black;      /* box border */
-            padding: 15px;                /* space inside the box */
-            margin: 20px;                 /* space outside the box */
-            border-radius: 0px;          /* rounded corners */
-            width: 65%;                 /* optional fixed width */
-        }
+    body {
+      background-color: lightblue;
+    }
 
-        body {
-            background-color: lightblue;  /* background of the whole page */
-        }
-    </style>
+    .text-box { 
+      background-color: lightyellow;
+      border: 2px solid black;
+      padding: 15px;
+      margin: 20px;
+      border-radius: 0px;
+      width: 65%;
+    }
+
+    /* status colouring */
+    .dead {
+      background-color: #ffcccc;
+      border-color: red;
+    }
+
+    .sent {
+      background-color: #ccffcc;
+      border-color: green;
+    }
+
+    /* tabs */
+    .tabs {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .tabs button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
-  <img src="images/tubs.png" alt="Mycology Spawn Log" style="display: block; margin: 0 auto; max-width: 300px;">
- 
 
-  <!-- Link back to homepage -->
-  <a href="index.html" style="margin-top: 30px; display: inline-block;">
-    <img src="images/spawnjars.png" alt="Back to Jars" width="200" height="50">
+  <img src="images/tubs.png" alt="Mycology Spawn Log"
+       style="display:block; margin:0 auto; max-width:300px;">
+
+  <!-- navigation -->
+  <a href="index.html">
+    <img src="images/spawnjars.png" width="200" height="50">
   </a>
-  
+
   <a href="tubs.html">
-     <img src="images/tubs.png" alt="Back to tubs" width="200" height="50">
-</a>
-  
+    <img src="images/tubs.png" width="200" height="50">
+  </a>
+
   <a href="coin.html">
-     <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
-</a>
+    <img src="images/coinbutton.JPEG" width="200" height="50">
+  </a>
 
-<a href="runs.html">
-     <img src="images/running.png" alt="Back to tubs" width="200" height="50">
-</a>
+  <a href="runs.html">
+    <img src="images/running.png" width="200" height="50">
+  </a>
 
-<a href="agar.html">
-     <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
-</a>
+  <a href="agar.html">
+    <img src="images/agar_header.png" width="200" height="50">
+  </a>
+
   <a href="recipes.html">
-     <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
-</a>
+    <img src="images/recipes.jpg" width="200" height="50">
+  </a>
 
+  <!-- tabs -->
+  <div class="tabs">
+    <button onclick="showYear('2025')">2025</button>
+    <button onclick="showYear('2026')">2026</button>
+  </div>
 
-  <div class="text-box">
-        hillbilly pumpkin <br>
-    inoculated 2nd / 7th pins 20th / 7th flush 1 29th / 7th biggest pin 83g wet flush total wet 607g dry 60g <br>
-    first soak 29th / 7th pins 2nd / 8th flush 2 11th / 8th biggest pin 99g wet flush total wet 522g dry 33g <br>
-    </div>
-  <div class="text-box">
-        el choco <br>
-    inoculated 9th / 8th dead
-    </div>
+  <!-- ===================== -->
+  <!-- ======= 2025 ======= -->
+  <!-- ===================== -->
+  <div id="year-2025">
+
     <div class="text-box">
-        hillbilly pumpkin <br>
-    inoculated 3/9/2025 pins right in the border between casing and no casing 16/9/2025 first flush 26/9/2025 biggest fruit 42g total wet 382g dry 30g
-    </div> 
-  <div class="text-box">
-        B+ <br>
-    bag inoculated 30/9/2025 pins 19/10/2025 first flush 69g 3/11/2025-6/11/2025<br>
-    <br>
-    tub inoculated 30/9/2025 pins 17/10/2025 first flush 66.4 wet 4/11/2025-6/11/2025
+      hillbilly pumpkin <br>
+      inoculated 2nd / 7th pins 20th / 7th flush 1 29th / 7th
+      biggest pin 83g wet flush total wet 607g dry 60g <br>
+      first soak 29th / 7th pins 2nd / 8th flush 2 11th / 8th
+      biggest pin 99g wet flush total wet 522g dry 33g
     </div>
-  <div class="text-box">
-        hillbilly pumkin <br>
-    tub inoculated 10/12/2025 pins 27/12/2025 2.5g wet 05/01/2025 second pins 07/01/2025<br>
-    <br>
-    bag inoculated 15/12/2025 pins 3/01/2025
+
+    <div class="text-box dead">
+      el choco <br>
+      inoculated 9th / 8th dead
     </div>
+
+    <div class="text-box">
+      hillbilly pumpkin <br>
+      inoculated 3/9/2025 pins right in the border between casing and no casing
+      16/9/2025 first flush 26/9/2025 biggest fruit 42g
+      total wet 382g dry 30g
+    </div>
+
+    <div class="text-box">
+      B+ <br>
+      bag inoculated 30/9/2025 pins 19/10/2025
+      first flush 69g 3/11/2025-6/11/2025<br><br>
+      tub inoculated 30/9/2025 pins 17/10/2025
+      first flush 66.4 wet 4/11/2025-6/11/2025
+    </div>
+
+    <div class="text-box">
+      hillbilly pumkin <br>
+      tub inoculated 10/12/2025 pins 27/12/2025
+      2.5g wet 05/01/2025 second pins 07/01/2025<br><br>
+      bag inoculated 15/12/2025 pins 3/01/2025
+    </div>
+
+  </div>
+
+  <!-- ===================== -->
+  <!-- ======= 2026 ======= -->
+  <!-- ===================== -->
+  <div id="year-2026" style="display:none;">
+    <!-- add 2026 tubs here when ready -->
+  </div>
+
+  <script>
+    function showYear(year) {
+      document.getElementById('year-2025').style.display = 'none';
+      document.getElementById('year-2026').style.display = 'none';
+      document.getElementById('year-' + year).style.display = 'block';
+    }
+  </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
