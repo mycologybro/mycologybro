@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Run Tracker</title>
 
 <style>
@@ -13,44 +13,54 @@ body {
   background: var(--bg);
   margin: 0;
   padding: 20px;
-  color: #111;
   text-align: center;
 }
 
 .hero {
-  width: 100%;
   height: 160px;
   border-radius: 10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom: 12px;
   background-image: url("images/running.png");
   background-size: cover;
   background-position: center;
   position: relative;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .hero::after {
   content:"";
-  position:absolute; inset:0;
-  background: rgba(0,0,0,0.28);
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.3);
 }
 .hero h1 {
   position: relative;
   color:#fff;
   font-size:36px;
   letter-spacing:2px;
-  z-index:2;
 }
 
 .card {
   max-width: 900px;
-  margin: 14px auto;
+  margin: 16px auto;
   background: var(--card);
-  padding: 14px;
+  padding: 16px;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.tabs {
+  margin: 20px 0;
+}
+.tabs button {
+  padding:10px 20px;
+  font-size:16px;
+  cursor:pointer;
+}
+.tabs .active {
+  background:#6c7ae0;
+  color:white;
 }
 
 form {
@@ -59,57 +69,37 @@ form {
   gap:12px;
   justify-content:center;
 }
-
-.field { display:flex; flex-direction:column; }
-
+.field {
+  display:flex;
+  flex-direction:column;
+}
 input {
   padding:8px;
   border-radius:6px;
   border:1px solid #ccc;
 }
-
-button {
+button[type="submit"] {
   padding:10px 18px;
   background: var(--accent);
   color:white;
   border:none;
   border-radius:8px;
+  font-weight:bold;
   cursor:pointer;
-  font-weight:700;
-}
-
-.tabs {
-  margin: 20px 0;
-}
-
-.tabs button {
-  padding:10px 18px;
-  margin:0 6px;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.tabs .active {
-  background:#6c7ae0;
-  color:white;
 }
 
 table {
   width:100%;
   border-collapse: collapse;
-  margin-top:18px;
 }
-
 th, td {
-  padding:10px;
   border:1px solid #ddd;
+  padding:10px;
 }
-
 th {
   background:#6c7ae0;
   color:white;
 }
-
 tr:nth-child(even) {
   background:#f8fbff;
 }
@@ -121,7 +111,6 @@ tr:nth-child(even) {
   background:#fff;
   border-radius:8px;
   padding:12px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.04);
 }
 </style>
 </head>
@@ -154,7 +143,7 @@ tr:nth-child(even) {
     <input id="time" type="text" placeholder="14:54" required>
   </div>
 
-  <div class="field" style="align-self:flex-end">
+  <div class="field" style="align-self:flex-end;">
     <button type="submit">Add Run</button>
   </div>
 </form>
@@ -162,7 +151,11 @@ tr:nth-child(even) {
 
 <table class="card">
 <thead>
-<tr><th>Date</th><th>Distance</th><th>Time</th></tr>
+<tr>
+  <th>Date</th>
+  <th>Distance</th>
+  <th>Time</th>
+</tr>
 </thead>
 <tbody id="runsTable"></tbody>
 </table>
@@ -178,11 +171,13 @@ let runs = [];
 let activeYear = new Date().getFullYear();
 let chart = null;
 
-function assertTimeFormat(t){ return /^[0-9]{1,2}:[0-5][0-9]$/.test(t); }
+function assertTimeFormat(t){
+  return /^[0-9]{1,2}:[0-5][0-9]$/.test(t);
+}
 
 function normalizeTime(t){
-  const [m,s] = t.split(":");
-  return `${parseInt(m)}:${String(Math.min(59,parseInt(s))).padStart(2,"0")}`;
+  const [m,s] = t.split(":").map(Number);
+  return `${m}:${String(Math.min(59,s)).padStart(2,"0")}`;
 }
 
 function timeToMinutes(t){
@@ -207,39 +202,43 @@ function renderTable(arr){
   const tbody = document.getElementById("runsTable");
   tbody.innerHTML = "";
   arr.forEach(r=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${r.date}</td><td>${r.distance}</td><td>${r.time}</td>`;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${r.date}</td><td>${r.distance}</td><td>${r.time}</td>`;
     tbody.appendChild(tr);
   });
 }
 
 function renderChart(arr){
   if(chart) chart.destroy();
-
   if(arr.length === 0) return;
 
-  const sorted=[...arr].sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const labels=sorted.map(r=>r.date);
-  const data=sorted.map(r=>timeToMinutes(r.time)/r.distance);
+  const sorted = [...arr].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const labels = sorted.map(r=>r.date);
+  const data = sorted.map(r=>timeToMinutes(r.time)/r.distance);
 
-  chart=new Chart(document.getElementById("runsChart"),{
+  chart = new Chart(document.getElementById("runsChart"),{
     type:"line",
-    data:{labels,datasets:[{
-      label:"Pace (min/mile)",
-      data,
-      tension:0.25,
-      pointRadius:4,
-      segment:{borderColor:ctx=>ctx.p0.parsed.y<10?"green":"red"},
-      pointBackgroundColor:ctx=>ctx.parsed.y<10?"green":"red"
-    }]},
+    data:{
+      labels,
+      datasets:[{
+        label:"Pace (min/mile)",
+        data,
+        tension:0.25,
+        pointRadius:4,
+        segment:{ borderColor:c=>c.p0.parsed.y<10?"green":"red" },
+        pointBackgroundColor:c=>c.parsed.y<10?"green":"red"
+      }]
+    },
     options:{
       scales:{
         y:{
-          ticks:{callback:v=>{
-            const m=Math.floor(v);
-            const s=Math.round((v-m)*60);
-            return `${m}:${String(s).padStart(2,"0")}`;
-          }}
+          ticks:{
+            callback:v=>{
+              const m=Math.floor(v);
+              const s=Math.round((v-m)*60);
+              return `${m}:${String(s).padStart(2,"0")}`;
+            }
+          }
         }
       }
     }
@@ -248,9 +247,12 @@ function renderChart(arr){
 
 async function loadRuns(){
   try{
-    const res=await fetch(RAW_RUNS_JSON,{cache:"no-store"});
-    if(res.ok) runs=await res.json();
-  }catch(e){ console.error(e); runs=[]; }
+    const res = await fetch(RAW_RUNS_JSON,{cache:"no-store"});
+    if(res.ok) runs = await res.json();
+  }catch(e){
+    console.error("Load failed",e);
+    runs=[];
+  }
   setYear(activeYear);
 }
 
@@ -262,19 +264,20 @@ async function saveRun(run){
   });
 }
 
-document.getElementById("runForm").addEventListener("submit",async e=>{
+document.getElementById("runForm").addEventListener("submit", async e=>{
   e.preventDefault();
 
-  let date=dateInput.value=document.getElementById("date").value;
-  let distance=document.getElementById("distance").value;
-  let time=document.getElementById("time").value.trim();
+  const date = document.getElementById("date").value;
+  let distance = document.getElementById("distance").value;
+  let time = document.getElementById("time").value.trim();
 
+  if(!date || !distance || !time) return alert("Fill all fields");
   if(!assertTimeFormat(time)) return alert("Use mm:ss");
 
-  time=normalizeTime(time);
-  distance=Number(distance).toFixed(2);
+  time = normalizeTime(time);
+  distance = Number(distance).toFixed(2);
 
-  const run={date,distance,time};
+  const run = { date, distance, time };
   runs.push(run);
 
   setYear(new Date(date).getFullYear());
@@ -285,5 +288,6 @@ document.getElementById("runForm").addEventListener("submit",async e=>{
 
 loadRuns();
 </script>
+
 </body>
 </html>
