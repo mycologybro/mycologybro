@@ -1,172 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Run Tracker</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run Tracker</title>
 
-  <style>
-    :root { --accent:#007acc; --bg:#f4f4f4; --card:#fff; }
+<style>
+:root { --accent:#007acc; --bg:#f4f4f4; --card:#fff; }
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      margin: 0;
-      padding: 20px;
-      color: #111;
-      text-align: center;
-    }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  padding: 20px;
+  color: #111;
+  text-align: center;
+}
 
-    .hero {
-      width: 100%;
-      height: 160px;
-      border-radius: 10px;
-      overflow: hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-bottom: 12px;
-      background-image: url("images/running.png");
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    }
+.hero {
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
+  overflow: hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom: 12px;
+  background-image: url("images/running.png");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
 
-    .hero::after {
-      content: "";
-      position:absolute;
-      inset:0;
-      background: rgba(0,0,0,0.28);
-    }
+.hero::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.28);
+}
 
-    .hero h1 {
-      position: relative;
-      margin: 0;
-      color: #fff;
-      font-size: 36px;
-      letter-spacing: 2px;
-      z-index: 2;
-      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
-    }
+.hero h1 {
+  position: relative;
+  color:#fff;
+  font-size:36px;
+  z-index:2;
+}
 
-    .card {
-      max-width: 760px;
-      margin: 14px auto;
-      background: var(--card);
-      padding: 14px;
-      border-radius: 8px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-      text-align: left;
-    }
+.card {
+  max-width:760px;
+  margin:14px auto;
+  background:#fff;
+  padding:14px;
+  border-radius:8px;
+}
 
-    form {
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      align-items:center;
-      justify-content:center;
-    }
+form {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+}
 
-    form .field {
-      display:flex;
-      flex-direction:column;
-    }
+.field {
+  display:flex;
+  flex-direction:column;
+}
 
-    input[type="date"],
-    input[type="number"],
-    input[type="text"] {
-      padding:8px 10px;
-      border-radius:6px;
-      border:1px solid #ccc;
-      font-size:14px;
-      width:180px;
-    }
+input {
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
 
-    button[type="submit"] {
-      padding:10px 18px;
-      background: var(--accent);
-      color:white;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-    }
+button {
+  padding:10px 18px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    table {
-      width:100%;
-      border-collapse: collapse;
-      margin-top: 18px;
-      background: #fff;
-    }
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:18px;
+}
 
-    th, td {
-      padding:10px;
-      border:1px solid #ddd;
-      text-align:center;
-    }
+th,td {
+  border:1px solid #ddd;
+  padding:10px;
+}
 
-    th {
-      background:#6c7ae0;
-      color:#fff;
-    }
+th {
+  background:#6c7ae0;
+  color:#fff;
+}
 
-    tr:nth-child(even) {
-      background:#f8fbff;
-    }
-
-    #runsChart {
-      max-width:900px;
-      height:420px;
-      margin:26px auto;
-      display:block;
-      background:#fff;
-      border-radius:8px;
-      padding:12px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-    }
-  </style>
+#runsChart {
+  max-width:900px;
+  height:420px;
+  margin:26px auto;
+}
+</style>
 </head>
 
 <body>
 
-<div class="hero">
-  <h1>RUNNING</h1>
-</div>
+<div class="hero"><h1>RUNNING</h1></div>
 
 <div class="card">
-  <form id="runForm" autocomplete="off">
-    <div class="field">
-      <label>Date</label>
-      <input id="date" type="date" required>
-    </div>
-
-    <div class="field">
-      <label>Distance (miles)</label>
-      <input id="distance" type="number" step="0.01" required>
-    </div>
-
-    <div class="field">
-      <label>Time (mm:ss)</label>
-      <input id="time" type="text" placeholder="14:54" required>
-    </div>
-
-    <div class="field" style="align-self:center;">
-      <label style="visibility:hidden">submit</label>
-      <button type="submit">Add Run</button>
-    </div>
-  </form>
+<form id="runForm">
+  <div class="field">
+    <label>Date</label>
+    <input id="date" type="date" required>
+  </div>
+  <div class="field">
+    <label>Distance</label>
+    <input id="distance" type="number" step="0.01" required>
+  </div>
+  <div class="field">
+    <label>Time (mm:ss)</label>
+    <input id="time" type="text" required>
+  </div>
+  <button type="submit">Add Run</button>
+</form>
 </div>
 
-<table id="runsTable" class="card" style="max-width:900px; margin:12px auto;">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Distance (miles)</th>
-      <th>Time (mm:ss)</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+<table id="runsTable" class="card">
+<thead>
+<tr><th>Date</th><th>Distance</th><th>Time</th></tr>
+</thead>
+<tbody></tbody>
 </table>
 
 <canvas id="runsChart"></canvas>
@@ -177,145 +142,74 @@
 const NETLIFY_FN = "https://mycology-bro.netlify.app/.netlify/functions/addRun";
 const RAW_RUNS_JSON = "https://raw.githubusercontent.com/mycologybro/mycologybro/main/runs.json";
 
-function assertTimeFormat(t) {
-  return /^[0-9]{1,2}:[0-5][0-9]$/.test(t.trim());
-}
-
-function normalizeTime(t) {
-  const m = t.split(":").map(s => s.trim());
-  if (m.length !== 2) return t;
-
-  const mm = String(parseInt(m[0],10));
-  let ss = parseInt(m[1],10);
-  ss = Math.max(0, Math.min(59, isNaN(ss) ? 0 : ss));
-
-  return `${mm}:${String(ss).padStart(2,"0")}`;
-}
-
-function timeToMinutes(t) {
-  const [mm, ss] = t.split(":").map(Number);
-  return mm + ss / 60;
-}
-
 const form = document.getElementById("runForm");
+const dateInput = document.getElementById("date");
+const distanceInput = document.getElementById("distance");
+const timeInput = document.getElementById("time");
 const tableBody = document.querySelector("#runsTable tbody");
 const ctx = document.getElementById("runsChart").getContext("2d");
 
-let chart = null;
 let runs = [];
+let chart = null;
 
-function renderTable(arr) {
-  tableBody.innerHTML = "";
-  arr.forEach(r => {
-    const tr = document.createElement("tr");
+function normalizeTime(t){
+  const [m,s] = t.split(":");
+  return `${parseInt(m)}:${String(Math.min(59,parseInt(s)||0)).padStart(2,"0")}`;
+}
+
+function renderTable(){
+  tableBody.innerHTML="";
+  runs.forEach(r=>{
+    const tr=document.createElement("tr");
     tr.innerHTML = `
       <td>${r.date}</td>
       <td>${Number(r.distance).toFixed(2)}</td>
-      <td>${r.time}</td>
-    `;
+      <td>${r.time}</td>`;
     tableBody.appendChild(tr);
   });
 }
 
-function renderChart(arr) {
-  const sorted = arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const labels = sorted.map(r => r.date);
-
-  const data = sorted.map(r => {
-    return timeToMinutes(r.time) / r.distance;
-  });
-
-  if (chart) chart.destroy();
-
+function renderChart(){
+  if(chart) chart.destroy();
   chart = new Chart(ctx,{
     type:"line",
     data:{
-      labels,
+      labels:runs.map(r=>r.date),
       datasets:[{
-        label:"Pace (min/mile)",
-        data,
-        tension:0.25,
-        pointRadius:4,
-        pointHoverRadius:6,
-        fill:false,
-        segment:{
-          borderColor: c => c.p0.parsed.y < 10 ? "green" : "red"
-        },
-        pointBackgroundColor: c => c.parsed.y < 10 ? "green" : "red"
+        label:"Pace",
+        data:runs.map(r=>(Number(r.time.split(":")[0])+r.time.split(":")[1]/60)/r.distance),
+        borderColor:"blue"
       }]
-    },
-    options:{
-      scales:{
-        x:{ title:{ display:true, text:"Date" }},
-        y:{
-          title:{ display:true, text:"Pace (mm:ss per mile)" },
-          ticks:{
-            callback:value=>{
-              const m=Math.floor(value);
-              const s=Math.round((value-m)*60);
-              return `${m}:${String(s).padStart(2,"0")}`;
-            }
-          }
-        }
-      }
     }
   });
 }
 
-async function loadRunsFromGit() {
-  try {
-    const res = await fetch(RAW_RUNS_JSON,{ cache:"no-store" });
-    if(res.ok) runs = await res.json();
-  } catch(e) {
-    console.error("Load failed",e);
-    runs = [];
-  }
-  renderTable(runs);
-  renderChart(runs);
+async function loadRuns(){
+  try{
+    const res=await fetch(RAW_RUNS_JSON,{cache:"no-store"});
+    if(res.ok) runs=await res.json();
+  }catch(e){}
+  renderTable();
+  renderChart();
 }
 
-async function saveRunToNetlify(run) {
-  try {
-    await fetch(NETLIFY_FN,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify(run)
-    });
-  } catch(e){
-    console.error("Save error",e);
-  }
-}
-
-form.addEventListener("submit", async e => {
+form.addEventListener("submit",async e=>{
   e.preventDefault();
-
-  const date = dateInput.value;
-  let distance = distanceInput.value;
-  let time = timeInput.value.trim();
-
-  if(!date || !distance || !time) return alert("Fill all fields");
-
-  time = normalizeTime(time);
-  if(!assertTimeFormat(time)) return alert("Use mm:ss");
-
-  distance = Number(distance).toFixed(2);
-
-  const run = { date, distance, time };
-
+  const run={
+    date:dateInput.value,
+    distance:Number(distanceInput.value).toFixed(2),
+    time:normalizeTime(timeInput.value)
+  };
   runs.push(run);
-  renderTable(runs);
-  renderChart(runs);
-  await saveRunToNetlify(run);
-
+  renderTable();
+  renderChart();
+  fetch(NETLIFY_FN,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(run)});
   form.reset();
 });
 
-const dateInput = document.getElementById("date");
-const distanceInput = document.getElementById("distance");
-const timeInput = document.getElementById("time");
-
-loadRunsFromGit();
+loadRuns();
 </script>
 
 </body>
 </html>
+
