@@ -1,291 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Run Tracker</title>
+<meta charset="UTF-8">
+<title>Runs</title>
 
 <style>
-:root { --accent:#007acc; --bg:#f4f4f4; --card:#fff; }
-
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
-  margin: 0;
-  padding: 20px;
-  text-align: center;
+  font-family: Arial, sans-serif;
+  background:#e7f2ff;
+  padding:20px;
 }
 
-.hero {
-  height: 160px;
-  border-radius: 10px;
-  background-image: url("images/running.png");
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  margin-bottom: 20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.hero::after {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.3);
-}
-.hero h1 {
-  position: relative;
-  color:#fff;
-  font-size:36px;
-  letter-spacing:2px;
-}
+h1 { text-align:center; }
 
-.card {
-  max-width: 900px;
-  margin: 16px auto;
-  background: var(--card);
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-}
-
-.tabs {
-  margin: 20px 0;
-}
 .tabs button {
-  padding:10px 20px;
-  font-size:16px;
+  padding:8px 16px;
+  margin:4px;
   cursor:pointer;
-}
-.tabs .active {
-  background:#6c7ae0;
-  color:white;
 }
 
-form {
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  justify-content:center;
-}
-.field {
-  display:flex;
-  flex-direction:column;
-}
-input {
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #ccc;
-}
-button[type="submit"] {
-  padding:10px 18px;
-  background: var(--accent);
+.tabs button.active {
+  background:#333;
   color:white;
-  border:none;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
 }
 
 table {
-  width:100%;
   border-collapse: collapse;
-}
-th, td {
-  border:1px solid #ddd;
-  padding:10px;
-}
-th {
-  background:#6c7ae0;
-  color:white;
-}
-tr:nth-child(even) {
-  background:#f8fbff;
+  width:100%;
+  margin-top:20px;
 }
 
-#runsChart {
-  max-width:900px;
-  height:420px;
-  margin:26px auto;
+th, td {
+  border:1px solid #444;
+  padding:6px;
+  text-align:center;
+}
+
+form {
+  margin-top:20px;
   background:#fff;
-  border-radius:8px;
-  padding:12px;
+  padding:15px;
+  border:1px solid #aaa;
+  max-width:400px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-  <h1>RUNNING</h1>
-</div>
+<h1>Run Log</h1>
 
-<div class="tabs">
-  <button id="tab-2025" onclick="setYear(2025)">2025</button>
-  <button id="tab-2026" onclick="setYear(2026)">2026</button>
-</div>
+<div class="tabs" id="yearTabs"></div>
 
-<div class="card">
-<form id="runForm">
-  <div class="field">
-    <label>Date</label>
-    <input id="date" type="date" required>
-  </div>
-
-  <div class="field">
-    <label>Distance (miles)</label>
-    <input id="distance" type="number" step="0.01" required>
-  </div>
-
-  <div class="field">
-    <label>Time (mm:ss)</label>
-    <input id="time" type="text" placeholder="14:54" required>
-  </div>
-
-  <div class="field" style="align-self:flex-end;">
-    <button type="submit">Add Run</button>
-  </div>
-</form>
-</div>
-
-<table class="card">
-<thead>
-<tr>
-  <th>Date</th>
-  <th>Distance</th>
-  <th>Time</th>
-</tr>
-</thead>
-<tbody id="runsTable"></tbody>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Distance (km)</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody id="runTable"></tbody>
 </table>
 
-<canvas id="runsChart"></canvas>
+<form id="runForm">
+  <h3>Add Run</h3>
+  <label>Date <input type="date" id="date" required></label><br><br>
+  <label>Distance (km) <input type="number" step="0.01" id="distance" required></label><br><br>
+  <label>Time (mm:ss) <input type="text" id="time" placeholder="14:32" required></label><br><br>
+  <button type="submit">Add Run</button>
+</form>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const NETLIFY_FN = "https://mycology-bro.netlify.app/.netlify/functions/addRun";
-const RAW_RUNS_JSON = "https://raw.githubusercontent.com/mycologybro/mycologybro/main/runs.json";
-
 let runs = [];
 let activeYear = new Date().getFullYear();
-let chart = null;
+
+/* ---------- helpers ---------- */
+function normalizeTime(t){
+  if(/^\d+:\d$/.test(t)) return t.replace(/:(\d)$/, ":0$1");
+  return t;
+}
 
 function assertTimeFormat(t){
-  return /^[0-9]{1,2}:[0-5][0-9]$/.test(t);
+  return /^\d{1,2}:\d{2}$/.test(t);
 }
 
-function normalizeTime(t){
-  const [m,s] = t.split(":").map(Number);
-  return `${m}:${String(Math.min(59,s)).padStart(2,"0")}`;
+/* ---------- UI ---------- */
+function renderTabs(){
+  const years = [...new Set(runs.map(r => new Date(r.date).getFullYear()))].sort();
+  const tabs = document.getElementById("yearTabs");
+  tabs.innerHTML = "";
+
+  years.forEach(y => {
+    const b = document.createElement("button");
+    b.textContent = y;
+    if(y === activeYear) b.classList.add("active");
+    b.onclick = () => setYear(y);
+    tabs.appendChild(b);
+  });
 }
 
-function timeToMinutes(t){
-  const [m,s] = t.split(":").map(Number);
-  return m + s/60;
+function renderTable(){
+  const tbody = document.getElementById("runTable");
+  tbody.innerHTML = "";
+
+  runs
+    .filter(r => new Date(r.date).getFullYear() === activeYear)
+    .forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${r.date}</td>
+        <td>${r.distance}</td>
+        <td>${r.time}</td>
+      `;
+      tbody.appendChild(tr);
+    });
 }
 
 function setYear(y){
   activeYear = y;
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  document.getElementById("tab-"+y)?.classList.add("active");
-  render();
+  renderTabs();
+  renderTable();
 }
 
-function render(){
-  const filtered = runs.filter(r => new Date(r.date).getFullYear() === activeYear);
-  renderTable(filtered);
-  renderChart(filtered);
-}
-
-function renderTable(arr){
-  const tbody = document.getElementById("runsTable");
-  tbody.innerHTML = "";
-  arr.forEach(r=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${r.date}</td><td>${r.distance}</td><td>${r.time}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function renderChart(arr){
-  if(chart) chart.destroy();
-  if(arr.length === 0) return;
-
-  const sorted = [...arr].sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const labels = sorted.map(r=>r.date);
-  const data = sorted.map(r=>timeToMinutes(r.time)/r.distance);
-
-  chart = new Chart(document.getElementById("runsChart"),{
-    type:"line",
-    data:{
-      labels,
-      datasets:[{
-        label:"Pace (min/mile)",
-        data,
-        tension:0.25,
-        pointRadius:4,
-        segment:{ borderColor:c=>c.p0.parsed.y<10?"green":"red" },
-        pointBackgroundColor:c=>c.parsed.y<10?"green":"red"
-      }]
-    },
-    options:{
-      scales:{
-        y:{
-          ticks:{
-            callback:v=>{
-              const m=Math.floor(v);
-              const s=Math.round((v-m)*60);
-              return `${m}:${String(s).padStart(2,"0")}`;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
+/* ---------- data ---------- */
 async function loadRuns(){
-  try{
-    const res = await fetch(RAW_RUNS_JSON,{cache:"no-store"});
-    if(res.ok) runs = await res.json();
-  }catch(e){
-    console.error("Load failed",e);
-    runs=[];
-  }
+  const res = await fetch("runs.json", { cache: "no-store" });
+  runs = await res.json();
   setYear(activeYear);
 }
 
 async function saveRun(run){
-  await fetch(NETLIFY_FN,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(run)
+  const res = await fetch("/.netlify/functions/addRun", {
+    method: "POST",
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify(run)
   });
+
+  if(!res.ok){
+    alert("Failed to save run to GitHub");
+  }
 }
 
-document.getElementById("runForm").addEventListener("submit", async e=>{
+/* ---------- form ---------- */
+document.getElementById("runForm").addEventListener("submit", async e => {
   e.preventDefault();
 
   const date = document.getElementById("date").value;
   let distance = document.getElementById("distance").value;
   let time = document.getElementById("time").value.trim();
 
-  if(!date || !distance || !time) return alert("Fill all fields");
-  if(!assertTimeFormat(time)) return alert("Use mm:ss");
+  if(!assertTimeFormat(time)){
+    alert("Time must be mm:ss");
+    return;
+  }
 
   time = normalizeTime(time);
   distance = Number(distance).toFixed(2);
 
   const run = { date, distance, time };
-  runs.push(run);
 
+  runs.push(run);
   setYear(new Date(date).getFullYear());
+
   await saveRun(run);
 
   e.target.reset();
 });
 
+/* ---------- init ---------- */
 loadRuns();
 </script>
 
