@@ -1,12 +1,12 @@
-<!DOCTYPE html> 
-<html lang="en"> 
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" /> 
-  <title>Run Tracker</title> 
-  
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Run Tracker</title>
+
   <style>
-    :root { --accent:#007acc; --bg:#f4f4f4; --card:#fff; } 
+    :root { --accent:#007acc; --bg:#f4f4f4; --card:#fff; }
     body {
       font-family: Arial, Helvetica, sans-serif;
       background: var(--bg);
@@ -14,10 +14,10 @@
       padding: 20px;
       color: #111;
       text-align: center;
-    } 
-    /* Header banner */ 
-    
-    .hero { 
+    }
+
+    /* Header banner */
+    .hero {
       width: 100%;
       height: 160px;
       border-radius: 10px;
@@ -34,8 +34,7 @@
     }
     .hero::after {
       content: "";
-      position:absolute;
-      inset:0;
+      position:absolute; inset:0;
       background: rgba(0,0,0,0.28);
     }
     .hero h1 {
@@ -47,7 +46,8 @@
       z-index: 2;
       text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
     }
-    /* Nav */ 
+
+    /* Nav */
     nav {
       margin: 14px 0;
       display: flex;
@@ -64,7 +64,8 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
       font-weight: 600;
     }
-    /* Form card */ 
+
+    /* Form card */
     .card {
       max-width: 760px;
       margin: 14px auto;
@@ -92,7 +93,8 @@
       cursor:pointer;
       font-weight:700;
     }
-    /* Table & chart */ 
+
+    /* Table & chart */
     table {
       width:100%;
       border-collapse: collapse;
@@ -106,184 +108,194 @@
     }
     th { background:#6c7ae0; color:#fff; }
     tr:nth-child(even) { background:#f8fbff; }
-    #runsChart { max-width:900px; height:420px; margin:26px auto; display:block; background:#fff; border-radius:8px; padding:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.04); } 
-    
+    #runsChart { max-width:900px; height:420px; margin:26px auto; display:block; background:#fff; border-radius:8px; padding:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
+
     @media (max-width:720px) {
       .hero { height:120px; }
       .hero h1 { font-size:26px; }
-      input[type="date"], input[type="number"], input[type="text"] { width:100%; max-width:300px; } 
+      input[type="date"], input[type="number"], input[type="text"] { width:100%; max-width:300px; }
       .card { padding:10px; }
     }
-  </style> 
-</head> 
-  <body> 
-    
-    <div class="hero"> 
-      <h1>RUNNING</h1>
-    </div> 
-    <a href="index.html" style="margin-top: 30px; display: inline-block;"> 
-      <img src="images/spawnjars.png" alt="Back to Jars" width="200" height="50">
-    </a>
-    <a href="tubs.html"> 
-      <img src="images/tubs.png" alt="Back to tubs" width="200" height="50"> 
-    </a> 
-    <a href="coin.html">
-      <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
-    </a> 
-    <a href="runs.html">
-      <img src="images/running.png" alt="Back to tubs" width="200" height="50">
-    </a>
-    <a href="agar.html"> 
-      <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
-    </a>
-    <a href="recipes.html"> 
-      <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
-    </a> 
-    <div class="card">
-      <form id="runForm" autocomplete="off">
-        <div class="field">
-          <label for="date">Date</label>
-          <input id="date" type="date" required>
-        </div>
-        
-        <div class="field">
-          <label for="distance">Distance (miles)</label> 
-          <input id="distance" type="number" step="0.01" placeholder="e.g. 5.20" required>
-        </div>
-        
-        <div class="field">
-          <label for="time">Time (mm:ss)</label>
-          <input id="time" type="text" placeholder="14:54" required> 
-        </div> 
-        <div class="field" style="align-self:center;">
-          <label style="visibility:hidden">submit</label>
-          <button type="submit">Add Run</button>
-        </div>
-      </form>
-    </div>
-    
-    <table id="runsTable" class="card" style="max-width:900px; margin:12px auto;">
-      <thead>
-        <tr><th>Date</th><th>Distance (miles)</th><th>Time (mm:ss)</th></tr>
-      </thead>
-      <tbody></tbody> 
-    </table> 
-    
-    <canvas id="runsChart"></canvas>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      const NETLIFY_FN = "https://mycology-bro.netlify.app/.netlify/functions/addRun";
-      const RAW_RUNS_JSON = "https://raw.githubusercontent.com/mycologybro/mycologybro/main/runs.json";
-      
-      function assertTimeFormat(t) { return /^[0-9]{1,2}:[0-5][0-9]$/.test(t.trim()); }
-      function normalizeTime(t) {
-        const m = t.split(":").map(s=>s.trim());
-        if (m.length !== 2) return t;
-        const mm = String(parseInt(m[0],10));
-        let ss = parseInt(m[1],10);
-        if (isNaN(ss)) ss = 0;
-        ss = Math.max(0, Math.min(59, ss));
-        return ${mm}:${String(ss).padStart(2,"0")};
-      }
-      function timeToMinutes(t) {
-        const [mm, ss] = t.split(":").map(Number);
-        return mm + ss/60;
-      }
-      const form = document.getElementById("runForm");
-      const tableBody = document.querySelector("#runsTable tbody");
-      const ctx = document.getElementById("runsChart").getContext("2d");
-      let chart = null;
-      let runs = [];
-      
-      function renderTable(arr) {
-        tableBody.innerHTML = "";
-        arr.forEach(r=>{
-          const tr=document.createElement("tr");
-          tr.innerHTML=<td>${r.date}</td><td>${Number(r.distance).toFixed(2)}</td><td>${r.time}</td>;
-          tableBody.appendChild(tr);
-      });
-      }
-      
-      function renderChart(arr) {
-        const sorted = arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
-        const labels = sorted.map(r=>r.date);
-        const data = sorted.map(r => {
-          const minutes = timeToMinutes(r.time);
-          return minutes / r.distance;
-        });
-        if(chart) chart.destroy();
-        chart = new Chart(ctx,{
-          type:"line",
-          data:{
-            labels,
-            datasets:[{
-              label:"Pace (min/mile)",
-              data,
-              tension:0.25,
-              pointRadius:4,
-              pointHoverRadius:6,
-              fill:false,
-              segment: { borderColor: ctx => ctx.p0.parsed.y < 10 ? "green" : "red" }, 
-              pointBackgroundColor: ctx => ctx.parsed.y < 10 ? "green" : "red"
-            }]
-          },
-          options:{
-            scales:{
-              x:{title:{display:true,text:"Date"}},
-              y:{
-                title:{display:true,text:"Pace (mm:ss per mile)"},
-                ticks:{
-                  callback:function(value){
-                    const minutes = Math.floor(value);
-                    const seconds = Math.round((value - minutes) * 60);
-                    return ${minutes}:${seconds.toString().padStart(2,"0")};
-                  }
-                }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>RUNNING</h1>
+  </div>
+
+  <a href="index.html" style="margin-top: 30px; display: inline-block;">
+    <img src="images/spawnjars.png" alt="Back to Jars" width="200" height="50">
+  </a>
+  
+  <a href="tubs.html">
+     <img src="images/tubs.png" alt="Back to tubs" width="200" height="50">
+  </a>
+  
+  <a href="coin.html">
+     <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
+  </a>
+
+  <a href="runs.html">
+     <img src="images/running.png" alt="Back to tubs" width="200" height="50">
+  </a>
+
+  <a href="agar.html">
+     <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
+  </a>
+  
+  <a href="recipes.html">
+     <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
+  </a>
+
+  <div class="card">
+    <form id="runForm" autocomplete="off">
+      <div class="field">
+        <label for="date">Date</label>
+        <input id="date" type="date" required>
+      </div>
+
+      <div class="field">
+        <label for="distance">Distance (miles)</label>
+        <input id="distance" type="number" step="0.01" placeholder="e.g. 5.20" required>
+      </div>
+
+      <div class="field">
+        <label for="time">Time (mm:ss)</label>
+        <input id="time" type="text" placeholder="14:54" required>
+      </div>
+
+      <div class="field" style="align-self:center;">
+        <label style="visibility:hidden">submit</label>
+        <button type="submit">Add Run</button>
+      </div>
+    </form>
+  </div>
+
+  <table id="runsTable" class="card" style="max-width:900px; margin:12px auto;">
+    <thead>
+      <tr><th>Date</th><th>Distance (miles)</th><th>Time (mm:ss)</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <canvas id="runsChart"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  const NETLIFY_FN = "https://mycology-bro.netlify.app/.netlify/functions/addRun";
+  const RAW_RUNS_JSON = "https://raw.githubusercontent.com/mycologybro/mycologybro/main/runs.json";
+
+  function assertTimeFormat(t) { return /^[0-9]{1,2}:[0-5][0-9]$/.test(t.trim()); }
+  function normalizeTime(t) {
+    const m = t.split(":").map(s=>s.trim());
+    if (m.length !== 2) return t;
+    const mm = String(parseInt(m[0],10));
+    let ss = parseInt(m[1],10);
+    if (isNaN(ss)) ss = 0;
+    ss = Math.max(0, Math.min(59, ss));
+    return `${mm}:${String(ss).padStart(2,"0")}`;
+  }
+  function timeToMinutes(t) {
+    const [mm, ss] = t.split(":").map(Number);
+    return mm + ss/60;
+  }
+
+  const form = document.getElementById("runForm");
+  const tableBody = document.querySelector("#runsTable tbody");
+  const ctx = document.getElementById("runsChart").getContext("2d");
+  let chart = null;
+  let runs = [];
+
+  function renderTable(arr) {
+    tableBody.innerHTML = "";
+    arr.forEach(r=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${r.date}</td><td>${Number(r.distance).toFixed(2)}</td><td>${r.time}</td>`;
+      tableBody.appendChild(tr);
+    });
+  }
+
+  function renderChart(arr) {
+    const sorted = arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const labels = sorted.map(r=>r.date);
+    const data = sorted.map(r => {
+      const minutes = timeToMinutes(r.time);
+      return minutes / r.distance;
+    });
+    if(chart) chart.destroy();
+    chart = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels,
+        datasets:[{
+          label:"Pace (min/mile)",
+          data,
+          tension:0.25,
+          pointRadius:4,
+          pointHoverRadius:6,
+          fill:false,
+          segment: { borderColor: ctx => ctx.p0.parsed.y < 10 ? "green" : "red" },
+          pointBackgroundColor: ctx => ctx.parsed.y < 10 ? "green" : "red"
+        }]
+      },
+      options:{
+        scales:{
+          x:{title:{display:true,text:"Date"}},
+          y:{
+            title:{display:true,text:"Pace (mm:ss per mile)"},
+            ticks:{
+              callback:function(value){
+                const minutes = Math.floor(value);
+                const seconds = Math.round((value - minutes) * 60);
+                return `${minutes}:${seconds.toString().padStart(2,"0")}`;
               }
             }
           }
-        });
-      } 
-      
-      async function loadRunsFromGit() {
-        try {
-          const res=await fetch(RAW_RUNS_JSON,{cache:"no-store"});
-          if(res.ok){ runs=await res.json(); }
-        } catch(e){ console.error("Load failed",e); runs=[]; }
-        renderTable(runs);
-        renderChart(runs);
+        }
       }
-      
-      async function saveRunToNetlify(run) {
-        try {
-          const res=await fetch(NETLIFY_FN,{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(run)
-          });
-          const json=await res.json().catch(()=>null);
-          console.log("Netlify response",res.status,json);
-        } catch(e){ console.error("Save error",e); }
-      }
-      
-      form.addEventListener("submit",async e=>{
-        e.preventDefault();
-        const date=document.getElementById("date").value;
-        let distance=document.getElementById("distance").value;
-        let time=document.getElementById("time").value.trim();
-        if(!date||!distance||!time) return alert("Fill all fields");
-        distance=Number(distance).toFixed(2);
-        time=normalizeTime(time);
-        if(!assertTimeFormat(time)) return alert("Use mm:ss (e.g. 14:54)");
-        const run={date,distance,time};
-        runs.push(run);
-        renderTable(runs);
-        renderChart(runs);
-        await saveRunToNetlify(run);
-        form.reset();
+    });
+  }
+
+  async function loadRunsFromGit() {
+    try {
+      const res=await fetch(RAW_RUNS_JSON,{cache:"no-store"});
+      if(res.ok){ runs=await res.json(); }
+    } catch(e){ console.error("Load failed",e); runs=[]; }
+    renderTable(runs);
+    renderChart(runs);
+  }
+
+  async function saveRunToNetlify(run) {
+    try {
+      const res=await fetch(NETLIFY_FN,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(run)
       });
-      
-      loadRunsFromGit();
-    </script>
-  </body>
+      const json=await res.json().catch(()=>null);
+      console.log("Netlify response",res.status,json);
+    } catch(e){ console.error("Save error",e); }
+  }
+
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const date=document.getElementById("date").value;
+    let distance=document.getElementById("distance").value;
+    let time=document.getElementById("time").value.trim();
+    if(!date||!distance||!time) return alert("Fill all fields");
+    distance=Number(distance).toFixed(2);
+    time=normalizeTime(time);
+    if(!assertTimeFormat(time)) return alert("Use mm:ss (e.g. 14:54)");
+    const run={date,distance,time};
+    runs.push(run);
+    renderTable(runs);
+    renderChart(runs);
+    await saveRunToNetlify(run);
+    form.reset();
+  });
+
+  loadRunsFromGit();
+  </script>
+</body>
 </html>
