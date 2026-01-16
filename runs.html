@@ -259,7 +259,7 @@
 
   async function loadRunsFromGit() {
     try {
-      const res=await fetch(RAW_RUNS_JSON,{cache:"no-store"});
+      const res = await fetch(RAW_RUNS_JSON + '?t=' + new Date().getTime(), {cache:"no-store"});
       if(res.ok){ runs=await res.json(); }
     } catch(e){ console.error("Load failed",e); runs=[]; }
     renderTable(runs);
