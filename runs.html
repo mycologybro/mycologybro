@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Run Tracker</title>
-
   <style>
     :root { --accent:#007acc; --bg:#f4f4f4; --card:#fff; }
     body {
@@ -15,8 +14,6 @@
       color: #111;
       text-align: center;
     }
-
-    /* Header banner */
     .hero {
       width: 100%;
       height: 160px;
@@ -46,8 +43,6 @@
       z-index: 2;
       text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
     }
-
-    /* Nav */
     nav {
       margin: 14px 0;
       display: flex;
@@ -64,25 +59,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
       font-weight: 600;
     }
-
-    /* Tabs */
-    .tab-buttons {
-      margin: 20px 0;
-      text-align: center;
-    }
-    .tab-buttons button {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      background-color: #3a3a3a;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 6px;
-    }
-    .tab-buttons button.active { background-color: #6c7ae0; }
-
-    /* Form card */
     .card {
       max-width: 760px;
       margin: 14px auto;
@@ -110,8 +86,6 @@
       cursor:pointer;
       font-weight:700;
     }
-
-    /* Table & chart */
     table {
       width:100%;
       border-collapse: collapse;
@@ -126,7 +100,15 @@
     th { background:#6c7ae0; color:#fff; }
     tr:nth-child(even) { background:#f8fbff; }
     #runsChart { max-width:900px; height:420px; margin:26px auto; display:block; background:#fff; border-radius:8px; padding:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
-
+    /* Tabs */
+    .tab-buttons { text-align:center; margin:20px 0; }
+    .tab-buttons button {
+      padding:8px 16px; margin:0 4px;
+      border:none; border-radius:6px;
+      cursor:pointer; font-weight:600;
+      background:#222; color:white;
+    }
+    .tab-buttons button.active { background:#6c7ae0; }
     @media (max-width:720px) {
       .hero { height:120px; }
       .hero h1 { font-size:26px; }
@@ -137,23 +119,25 @@
 </head>
 <body>
 
-  <div class="hero">
-    <h1>RUNNING</h1>
-  </div>
+  <div class="hero"><h1>RUNNING</h1></div>
 
-  <!-- Navigation -->
-  <a href="index.html"><img src="images/spawnjars.png" width="200" height="50"></a>
-  <a href="tubs.html"><img src="images/tubs.png" width="200" height="50"></a>
-  <a href="coin.html"><img src="images/coinbutton.JPEG" width="200" height="50"></a>
-  <a href="runs.html"><img src="images/running.png" width="200" height="50"></a>
-  <a href="agar.html"><img src="images/agar_header.png" width="200" height="50"></a>
-  <a href="recipes.html"><img src="images/recipes.jpg" width="200" height="50"></a>
+  <nav>
+    <a href="index.html"><img src="images/spawnjars.png" width="200" height="50"></a>
+    <a href="tubs.html"><img src="images/tubs.png" width="200" height="50"></a>
+    <a href="coin.html"><img src="images/coinbutton.JPEG" width="200" height="50"></a>
+    <a href="runs.html"><img src="images/running.png" width="200" height="50"></a>
+    <a href="agar.html"><img src="images/agar_header.png" width="200" height="50"></a>
+    <a href="recipes.html"><img src="images/recipes.jpg" width="200" height="50"></a>
+  </nav>
 
-  <!-- Tabs -->
+  <!-- Year Tabs -->
   <div class="tab-buttons">
-    <button class="active" onclick="showYear('2025', this)">2025</button>
-    <button onclick="showYear('2026', this)">2026</button>
+    <button onclick="showYear('2025')" id="tab-2025" class="active">2025</button>
+    <button onclick="showYear('2026')" id="tab-2026">2026</button>
   </div>
+
+  <div id="year-2025" class="card"></div>
+  <div id="year-2026" class="card" style="display:none;"></div>
 
   <!-- Form -->
   <div class="card">
@@ -162,17 +146,14 @@
         <label for="date">Date</label>
         <input id="date" type="date" required>
       </div>
-
       <div class="field">
         <label for="distance">Distance (miles)</label>
         <input id="distance" type="number" step="0.01" placeholder="e.g. 5.20" required>
       </div>
-
       <div class="field">
         <label for="time">Time (mm:ss)</label>
         <input id="time" type="text" placeholder="14:54" required>
       </div>
-
       <div class="field" style="align-self:center;">
         <label style="visibility:hidden">submit</label>
         <button type="submit">Add Run</button>
@@ -180,7 +161,6 @@
     </form>
   </div>
 
-  <!-- Table -->
   <table id="runsTable" class="card" style="max-width:900px; margin:12px auto;">
     <thead>
       <tr><th>Date</th><th>Distance (miles)</th><th>Time (mm:ss)</th><th>Pace (mm:ss per mile)</th></tr>
@@ -188,7 +168,6 @@
     <tbody></tbody>
   </table>
 
-  <!-- Chart -->
   <canvas id="runsChart"></canvas>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -196,21 +175,13 @@
     const NETLIFY_FN = "https://mycology-bro.netlify.app/.netlify/functions/addRun";
     const RAW_RUNS_JSON = "https://raw.githubusercontent.com/mycologybro/mycologybro/main/runs.json";
 
-    let runs = [];
-    let currentYear = '2025';
-    let chart = null;
-
-    const tableBody = document.querySelector("#runsTable tbody");
-    const ctx = document.getElementById("runsChart").getContext("2d");
-    const form = document.getElementById("runForm");
-
     function assertTimeFormat(t) { return /^[0-9]{1,2}:[0-5][0-9]$/.test(t.trim()); }
     function normalizeTime(t) {
       const m = t.split(":").map(s=>s.trim());
-      if (m.length !== 2) return t;
+      if(m.length !== 2) return t;
       const mm = String(parseInt(m[0],10));
       let ss = parseInt(m[1],10);
-      if (isNaN(ss)) ss = 0;
+      if(isNaN(ss)) ss = 0;
       ss = Math.max(0, Math.min(59, ss));
       return `${mm}:${String(ss).padStart(2,"0")}`;
     }
@@ -218,33 +189,28 @@
       const [mm, ss] = t.split(":").map(Number);
       return mm + ss/60;
     }
-    function formatPace(minutesPerMile) {
-      const minutes = Math.floor(minutesPerMile);
-      const seconds = Math.round((minutesPerMile - minutes) * 60);
-      return `${minutes}:${seconds.toString().padStart(2,"0")}`;
-    }
+
+    const form = document.getElementById("runForm");
+    const tableBody = document.querySelector("#runsTable tbody");
+    const ctx = document.getElementById("runsChart").getContext("2d");
+    let chart = null;
+    let runs = [];
 
     function renderTable(arr) {
       tableBody.innerHTML = "";
-      arr.filter(r=>r.date.startsWith(currentYear)).forEach(r=>{
-        const pace = timeToMinutes(r.time)/r.distance;
+      arr.forEach(r=>{
+        const paceMin = timeToMinutes(r.time)/r.distance;
+        const paceDisplay = `${Math.floor(paceMin)}:${Math.round((paceMin%1)*60).toString().padStart(2,"0")}`;
         const tr = document.createElement("tr");
-        const paceColor = pace < 10 ? "green" : "red";
-        tr.innerHTML = `
-          <td>${r.date}</td>
-          <td>${Number(r.distance).toFixed(2)}</td>
-          <td>${r.time}</td>
-          <td style="color:${paceColor}; font-weight:bold;">${formatPace(pace)}</td>
-        `;
+        tr.innerHTML = `<td>${r.date}</td><td>${Number(r.distance).toFixed(2)}</td><td>${r.time}</td><td style="color:${paceMin>=10?'red':'green'}">${paceDisplay}</td>`;
         tableBody.appendChild(tr);
       });
     }
 
     function renderChart(arr) {
-      const filtered = arr.filter(r=>r.date.startsWith(currentYear));
-      const sorted = filtered.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+      const sorted = arr.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
       const labels = sorted.map(r=>r.date);
-      const data = sorted.map(r => timeToMinutes(r.time)/r.distance);
+      const data = sorted.map(r=>timeToMinutes(r.time)/r.distance);
       if(chart) chart.destroy();
       chart = new Chart(ctx,{
         type:"line",
@@ -264,32 +230,63 @@
         options:{
           scales:{
             x:{title:{display:true,text:"Date"}},
-            y:{
-              title:{display:true,text:"Pace (mm:ss per mile)"},
-              ticks:{
-                callback:function(value){
-                  const minutes = Math.floor(value);
-                  const seconds = Math.round((value - minutes) * 60);
-                  return `${minutes}:${seconds.toString().padStart(2,"0")}`;
-                }
-              }
+            y:{ title:{display:true,text:"Pace (mm:ss per mile)"},
+              ticks:{ callback:function(value){
+                const minutes=Math.floor(value);
+                const seconds=Math.round((value-minutes)*60);
+                return `${minutes}:${seconds.toString().padStart(2,"0")}`;
+              } }
             }
           }
         }
       });
     }
 
+    function showYear(year) {
+      document.getElementById('year-2025').style.display = 'none';
+      document.getElementById('year-2026').style.display = 'none';
+      document.getElementById('year-'+year).style.display = 'block';
+      document.getElementById('tab-2025').classList.remove('active');
+      document.getElementById('tab-2026').classList.remove('active');
+      document.getElementById('tab-'+year).classList.add('active');
+    }
+
     async function loadRunsFromGit() {
       try {
-        const res = await fetch(RAW_RUNS_JSON + '?t=' + new Date().getTime(), {cache:"no-store"});
-        if(res.ok){ runs=await res.json(); }
+        const res = await fetch(RAW_RUNS_JSON+'?t='+Date.now(), {cache:"no-store"});
+        if(res.ok){
+          const gitRuns = await res.json();
+          const localRuns = runs.slice(); // preserve local new runs
+          const gitIds = gitRuns.map(r=>r.date+r.distance+r.time);
+          // add any local runs not yet in GitHub
+          runs = [...gitRuns];
+          localRuns.forEach(r=>{
+            if(!gitIds.includes(r.date+r.distance+r.time)) runs.push(r);
+          });
+        }
       } catch(e){ console.error("Load failed",e); runs=[]; }
       renderTable(runs);
       renderChart(runs);
+      renderTabs();
+    }
+
+    function renderTabs() {
+      const year2025 = document.getElementById('year-2025');
+      const year2026 = document.getElementById('year-2026');
+      year2025.innerHTML = '';
+      year2026.innerHTML = '';
+      runs.forEach(r=>{
+        const runYear = new Date(r.date).getFullYear();
+        const div = document.createElement('div');
+        div.className='card';
+        div.textContent = `${r.date} - ${r.distance} miles in ${r.time} (${Math.floor(timeToMinutes(r.time)/r.distance)}:${Math.round((timeToMinutes(r.time)/r.distance%1)*60).toString().padStart(2,"0")})`;
+        if(runYear==2025) year2025.appendChild(div);
+        else if(runYear==2026) year2026.appendChild(div);
+      });
     }
 
     async function saveRunToNetlify(run) {
-      try {
+      try{
         const res=await fetch(NETLIFY_FN,{
           method:"POST",
           headers:{"Content-Type":"application/json"},
@@ -297,10 +294,10 @@
         });
         const json=await res.json().catch(()=>null);
         console.log("Netlify response",res.status,json);
-      } catch(e){ console.error("Save error",e); }
+      }catch(e){console.error("Save error",e);}
     }
 
-    form.addEventListener("submit",async e=>{
+    form.addEventListener("submit", async e=>{
       e.preventDefault();
       const date=document.getElementById("date").value;
       let distance=document.getElementById("distance").value;
@@ -313,21 +310,13 @@
       runs.push(run);
       renderTable(runs);
       renderChart(runs);
+      renderTabs();
       await saveRunToNetlify(run);
       form.reset();
     });
-
-    function showYear(year, btn) {
-      currentYear = year;
-      renderTable(runs);
-      renderChart(runs);
-
-      // update active button styling
-      document.querySelectorAll(".tab-buttons button").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-    }
 
     loadRunsFromGit();
   </script>
 </body>
 </html>
+
