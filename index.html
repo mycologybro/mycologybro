@@ -1,214 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mycology Log</title>
+  <meta charset="UTF-8">
+  <title>myco recipes</title>
+  <style>
+        .text-box { 
+            background-color: lightyellow; /* background inside the box */
+            border: 2px solid black;      /* box border */
+            padding: 15px;                /* space inside the box */
+            margin: 20px;                 /* space outside the box */
+            border-radius: 10px;          /* rounded corners */
+            width: 65%;                 /* optional fixed width */
+        }
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background-color: #B9EAA6;
-  margin: 0;
-  padding: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: #fff;
-}
-
-th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: center;
-}
-
-th {
-  background-color: #6c7ae0;
-  color: white;
-}
-
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-/* Tabs – your colours stay as-is */
-.tab-buttons {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.tab-buttons button {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      background-color: #3a3a3a;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .tab-buttons button.active {
-      background-color: #6c7ae0;
-    }
-
-/* Status colouring */
-.status-dead {
-  background-color: #f8b4b4 !important;
-  font-weight: bold;
-}
-
-.status-sent {
-  background-color: #b9eaa6 !important;
-  font-weight: bold;
-}
-</style>
+        body {
+            background-color: #F8C678;  /* background of the whole page */
+        }
+    </style>
 </head>
-
 <body>
+  <img src="images/recipes.jpg" alt="myco recipes" style="display: block; margin: 0 auto; max-width: 300px;">
+ 
 
-<img src="images/spawnjars.png" style="display:block;margin:0 auto;max-width:300px;">
+  <!-- Link back to homepage -->
+ <a href="index.html" style="margin-top: 30px; display: inline-block;">
+    <img src="images/spawnjars.png" alt="Back to Jars" width="200" height="50">
+  </a>
+  
+  <a href="tubs.html">
+     <img src="images/tubs.png" alt="Back to tubs" width="200" height="50">
+</a>
+  
+  <a href="coin.html">
+     <img src="images/coinbutton.JPEG" alt="coin" width="200" height="50">
+</a>
 
-<a href="index.html"><img src="images/spawnjars.png" width="200" height="50"></a>
-<a href="tubs.html"><img src="images/tubs.png" width="200" height="50"></a>
-<a href="coin.html"><img src="images/coinbutton.JPEG" width="200" height="50"></a>
-<a href="runs.html"><img src="images/running.png" width="200" height="50"></a>
-<a href="agar.html"><img src="images/agar_header.png" width="200" height="50"></a>
-<a href="recipes.html"><img src="images/recipes.jpg" width="200" height="50"></a>
+<a href="runs.html">
+     <img src="images/running.png" alt="Back to tubs" width="200" height="50">
+</a>
 
-<div style="margin-top:20px;text-align:center;">
-<img src="https://visitor-badge.laobi.icu/badge?page_id=mycologybro.mycologybro1">
-</div>
+<a href="agar.html">
+     <img src="images/agar_header.png" alt="Back to tubs" width="200" height="50">
+</a>
+  <a href="recipes.html">
+     <img src="images/recipes.jpg" alt="Back to recipes" width="200" height="50">
+</a>
 
-<!-- Tabs -->
-<div class="tab-buttons">
-<button id="btn2025" class="active" onclick="showYear('2025')">2025</button>
-<button id="btn2026" onclick="showYear('2026')">2026</button>
-</div>
 
-<!-- ================= 2025 ================= -->
-<div id="year-2025">
-<table>
-<thead>
-<tr>
-<th>Spawn</th>
-<th>Inoculation Date</th>
-<th>1st Break & Shake</th>
-<th>2nd Break & Shake</th>
-<th>3rd Break & Shake</th>
-<th>4rd Break & Shake</th>
-</tr>
-</thead>
-<tbody>
-
-<tr><td>el choco</td><td>14/7/2025</td><td>21/7/2025</td><td>9/8/2025 sent</td><td></td><td></td></tr>
-<tr><td>el choco</td><td>14/7/2025</td><td>21/7/2025</td><td>9/8/2025 sent</td><td></td><td></td></tr>
-<tr><td>loins mane</td><td>4/8/2025</td><td>14/8/2025</td><td>26/8/2025</td><td>sent</td><td></td></tr>
-<tr><td>loins mane</td><td>4/8/2025</td><td>14/8/2025</td><td>dead</td><td></td><td></td></tr>
-<tr><td>golden teacher</td><td>4/8/2025</td><td>14/8/2025</td><td>17/8/2025</td><td>29/8/2025 sent</td><td></td></tr>
-<tr><td>hillbilly pumpkin 1</td><td>4/8/2025</td><td>13/8/2025</td><td>17/8/2025</td><td>3/9/2025 sent</td><td></td></tr>
-<tr><td>hillbilly pumpkin 2</td><td>4/8/2025</td><td>13/8/2025</td><td>17/8/2025</td><td>dead</td><td></td></tr>
-<tr><td>hillbilly pumpkin 3</td><td>4/8/2025</td><td>13/8/2025</td><td>17/8/2025</td><td>3/9/2025 sent</td><td></td></tr>
-
-<tr><td>loins mane 1</td><td>4/9/2025</td><td>18/9/2025</td><td>28/9/2025</td><td>sent</td><td></td></tr>
-<tr><td>loins mane 2</td><td>4/9/2025</td><td>18/9/2025</td><td>28/9/2025</td><td>sent</td><td></td></tr>
-
-<tr><td>B+ 1</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
-<tr><td>B+ 2</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
-<tr><td>B+ 3</td><td>4/9/2025</td><td>14/9/2025</td><td>dead</td><td></td><td></td></tr>
-<tr><td>B+ 4</td><td>4/9/2025</td><td>14/9/2025</td><td>30/9/2025 sent</td><td></td><td></td></tr>
-
-<tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>jack frost</td><td>1/11/2025</td><td>9/11/2025</td><td>27/11/2025</td><td>07/12/2025</td><td>dead</td></tr>
-
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>dead</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>10/12/2025 sent tub</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>10/12/2025 sent tub</td></tr>
-<tr><td>hillbilly pumpkin</td><td>19/11/2025</td><td>27/11/2025</td><td>03/12/2025</td><td>07/12/2025</td><td>15/12/2025 sent bag</td></tr>
-
-<tr><td>bluey vuiton 1</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td>dead</td><td></td></tr>
-<tr><td>bluey vuiton 2</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td>sent 12/1/2026</td><td></td></tr>
-<tr><td>bluey vuiton 3</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td>12/1/2026</td><td>sent 22/01/2026</td></tr>
-<tr><td>bluey vuiton 4</td><td>10/12/2025</td><td>15/12/2025</td><td>03/01/2025</td><td>dead</td><td></td></tr>
-<tr><td>bluey vuiton 5</td><td>10/12/2025</td><td>15/12/2025</td><td>dead</td><td></td><td></td></tr>
-
-</tbody>
-</table>
-</div>
-
-<!-- ================= 2026 ================= -->
-<div id="year-2026" style="display:none;">
-<table>
-<thead>
-<tr>
-<th>Spawn</th>
-<th>Inoculation Date</th>
-<th>1st Break & Shake</th>
-<th>2nd Break & Shake</th>
-<th>3rd Break & Shake</th>
-<th>4rd Break & Shake</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>loins mane1</td><td>08/02/2026</td><td>25/02/2026</td><td>03/03/2026 sent</td><td></td><td></td></tr>
-<tr><td>loins mane2</td><td>12/01/2026</td><td>03/03/2026 sent</td><td></td><td></td><td></td></tr>
-<tr><td>nebula x octopi1</td><td>08/02/2026</td><td>18/02/2026</td><td>02/02/2026</td><td>16/03/2026 sent</td><td></td></tr>
-  <tr><td>nebula x octopi2</td><td>08/02/2026</td><td>21/02/2026</td><td>02/03/2026</td><td>16/03/2026 sent</td><td></td></tr>
-  <tr><td>nebula x octopi3</td><td>08/02/2026</td><td>22/02/2026</td><td>02/03/2026</td><td>16/03/2026 sent</td><td></td></tr>
-  <tr><td>nebula x octopi4</td><td>08/02/2026</td><td>22/02/2026</td><td>02/03/2026</td><td>16/03/2026 sent</td><td></td></tr>
-  <tr><td>albino gumby1</td><td>20/02/2026</td><td>02/02/2026</td><td>20/03/2026</td><td>29/03/2026</td><td>dead</td></tr>
-  <tr><td>albino gumby2</td><td>20/02/2026</td><td>10/03/2026</td><td>20/03/2026</td><td>29/03/2026</td><td>dead</td></tr>
-  <tr><td>albino gumby3</td><td>20/02/2026</td><td>10/03/2026</td><td>20/03/2026</td><td>29/03/2026</td><td>dead</td></tr>
-  <tr><td>albino gumby4</td><td>20/02/2026</td><td>10/03/2026</td><td>20/03/2026</td><td>29/03/2026</td><td>dead</td></tr>
-  <tr><td>albino gumby5</td><td>20/02/2026</td><td>10/03/2026</td><td>20/03/2026</td><td>29/03/2026</td><td>dead</td></tr>
-  <tr><td>hillbilly pumpkin1</td><td>23/03/2026</td><td>dead</td><td></td><td></td><td></td></tr>
-  <tr><td>hillbilly pumpkin2</td><td>23/03/2026</td><td>10/04/2026</td><td>dead</td><td></td><td></td></tr>
-  <tr><td>hillbilly pumpkin3</td><td>23/03/2026</td><td>10/04/2026</td><td>dead</td><td></td><td></td></tr>
-  <tr><td>hillbilly pumpkin4</td><td>23/03/2026</td><td>10/04/2026</td><td>dead</td><td></td><td></td></tr>
-  <tr><td>hillbilly pumpkin5</td><td>23/03/2026</td><td>10/04/2026</td><td>dead</td><td></td><td></td></tr>
-  <tr>jack frost 1<td>18/04/2026</td><td>03/05/2026</td><td></td><td></td><td></td><td></td></tr>
-  <tr>jack frost 2<td>18/04/2026</td><td></td><td></td><td></td><td></td><td></td></tr>
-  <tr>jack frost 3<td>18/04/2026</td><td></td><td></td><td></td><td></td><td></td></tr>
-  <tr>goliath penis envy 1<td>21/04/2026</td><td>03/05/2026</td><td></td><td></td><td></td><td></td></tr>
-  <tr>goliath penis envy 2<td>21/04/2026</td><td>03/05/2026</td><td></td><td></td><td></td><td></td></tr>
-  <tr>goliath penis envy 3<td>21/04/2026</td><td>dead</td><td></td><td></td><td></td><td></td></tr>
-  <tr>hillbilly pumpkin 1<td>21/04/2026</td><td>03/05/2026</td><td></td><td></td><td></td><td></td></tr>
-  <tr>hillbilly pumpkin 2<td>21/04/2026</td><td>03/05/2026</td><td></td><td></td><td></td><td></td></tr>
-  <tr>hillbilly pumpkin 3<td>21/04/2026</td><td>03/05/2026</td><td></td><td></td><td></td><td></td></tr>
-  <tr>hillbilly pumpkin lc<td>21/04/2026</td><td></td><td></td><td></td><td></td><td></td></tr>
-</tbody>
-</table>
-</div>
-
-<script>
-function showYear(year) {
-  document.getElementById('year-2025').style.display = 'none';
-  document.getElementById('year-2026').style.display = 'none';
-  document.getElementById('btn2025').classList.remove('active');
-  document.getElementById('btn2026').classList.remove('active');
-  document.getElementById('year-' + year).style.display = 'block';
-  document.getElementById('btn' + year).classList.add('active');
-}
-
-document.querySelectorAll('td').forEach(cell => {
-  const text = cell.textContent.toLowerCase();
-  if (text.includes('dead')) cell.classList.add('status-dead');
-  else if (text.includes('sent')) cell.classList.add('status-sent');
-});
-</script>
-
+  <div class="text-box">
+       <b> Honey agar</b><br>
+   5 grams light malt extract<br>
+    12 grams agar<br>
+    12 grams honey<br>
+    500ml water<br>
+    </div>
+  
+  <div class="text-box">
+      <b> charcoal ryzo agar</b> <br>
+    10 grams agar<br>
+6 grams LME<br>
+    0.75 grams nutritional yeast<br>
+    2 grams activated charcoal<br>
+    </div>
+    <div class="text-box">
+        <B>Master's mix</B><br>
+      750 grams wet = enough for one jar<br>
+      150 g hardwood fuel pellets<br>
+      150 g soy hulls<br>
+      450 g water (added after pellets are broken down)<br>
+      <br>
+      PC for 2.5 hours in 2.5ltrs of water<br>
+    </div>
+  <div class="text-box">
+        <B>coir verm sub</B><br>
+    1 brick coir (650 g)<br>
+    2 quarts (~2 L) vermiculite<br>
+    ~4 L boiling water<br>
+    </div>
 </body>
 </html>
-
-
 
 
 
