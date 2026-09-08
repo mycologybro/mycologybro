@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mycology Bro | Mycology Recipes</title>
+<meta name="description" content="Mycology Bro — mycology recipes for agar, Master's Mix and coir/vermiculite substrate.">
+<style>
+
+:root{
+  --bg:#f4f1e8;--paper:#fffdf8;--ink:#252a22;--muted:#667064;
+  --green:#304735;--green2:#49634d;--gold:#b28b4d;--line:#ddd8ca;
+  --danger:#6b432b;--dangerbg:#f3e7dc;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.65}
+a{color:inherit}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,253,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1120px;margin:auto;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{font:700 .88rem Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--green)}
+.links{display:flex;gap:22px;font:600 .86rem Arial,sans-serif}
+.links a{text-decoration:none}
+.hero{min-height:70vh;padding:80px 22px;display:grid;place-items:center;text-align:center;color:#fff;background:
+linear-gradient(135deg,rgba(28,43,29,.82),rgba(52,67,48,.58)),
+url("images/lionsmane.jpg") center/cover}
+.hero-inner{max-width:850px}
+.kicker{text-transform:uppercase;letter-spacing:.25em;font:700 .76rem Arial,sans-serif;color:#e4d0a8;margin-bottom:20px}
+h1{font-size:clamp(3.2rem,9vw,6.8rem);line-height:.9;font-weight:500;margin:0}
+.hero em{font-size:1.25rem}
+.hero p{max-width:680px;margin:25px auto 0;font-size:1.12rem}
+.cta{display:inline-block;margin-top:30px;background:#fff;color:var(--green);padding:12px 22px;border-radius:4px;text-decoration:none;font:700 .9rem Arial,sans-serif}
+section{max-width:1120px;margin:auto;padding:82px 22px}
+.heading{max-width:760px;margin-bottom:42px}
+.heading .kicker{color:var(--gold);margin-bottom:10px}
+h2{color:var(--green);font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.05;font-weight:500;margin:0 0 15px}
+h3{color:var(--green);margin:0 0 9px;font-size:1.25rem}
+.lead{color:var(--muted);font-size:1.08rem}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:27px}
+.card p{margin:0}
+.use{max-width:none;background:var(--green);color:#fff}
+.use-inner{max-width:1120px;margin:auto}
+.use h2{color:#fff}
+.dose{display:inline-block;border:1px solid rgba(255,255,255,.4);padding:13px 20px;font:700 1.35rem Arial,sans-serif;letter-spacing:.04em;margin:5px 0 20px}
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 28px}
+.pill{border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 14px;font:600 .86rem Arial,sans-serif}
+.alcohol{background:var(--dangerbg);color:var(--ink);border-radius:9px;padding:27px;margin-top:25px}
+.alcohol h3{color:var(--danger)}
+.safety{background:#ebe6da;max-width:none}
+.safety-inner{max-width:1120px;margin:auto}
+.notice{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--gold);padding:24px;border-radius:6px;margin-bottom:20px}
+.notice h3{margin-top:0}
+ul{padding-left:22px;margin-bottom:0}
+li{margin:7px 0}
+.disclaimer{font-size:.94rem;color:var(--muted)}
+footer{background:#202820;color:#d7d8cf;text-align:center;padding:42px 22px;font: .88rem Arial,sans-serif}
+footer strong{color:#fff}
+@media(max-width:700px){
+ .links{gap:12px;font-size:.75rem}
+ .grid{grid-template-columns:1fr}
+ section{padding:60px 18px}
+ .hero{min-height:78vh}
+}
+
+.contact { background: var(--paper); }
+.contact-inner { max-width: 780px; margin: auto; }
+.contact-form { display:grid; gap:10px; background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:30px; }
+.contact-form label { font:700 .86rem Arial,sans-serif; color:var(--green); margin-top:8px; }
+.contact-form input,.contact-form textarea { width:100%; border:1px solid var(--line); border-radius:5px; background:var(--paper); color:var(--ink); padding:13px 14px; font:1rem Georgia,"Times New Roman",serif; resize:vertical; }
+.contact-form input:focus,.contact-form textarea:focus { outline:2px solid var(--gold); outline-offset:1px; }
+.contact-form button { margin-top:12px; border:0; border-radius:5px; padding:14px 22px; background:var(--green); color:white; cursor:pointer; font:700 .9rem Arial,sans-serif; }
+.contact-form button:hover { background:var(--green2); }
+
+
+.hero {
+ min-height:58vh;
+ background:linear-gradient(135deg,rgba(28,43,29,.88),rgba(52,67,48,.68)),
+ radial-gradient(circle at 50% 35%,rgba(178,139,77,.22),transparent 45%);
+}
+.recipe-card {position:relative;overflow:hidden}
+.recipe-number {font:700 .72rem Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.recipe-card h3 {font-size:1.5rem;margin-bottom:16px}
+.ingredients {margin:0;padding-left:21px}
+.ingredients li {margin:8px 0}
+.recipe-note {margin-top:20px!important;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font-size:.95rem}
+.process {background:var(--green);color:#fff;max-width:none}
+.process-inner {max-width:1120px;margin:auto}
+.process h2 {color:#fff}
+.process .card {background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+.process .card h3 {color:#fff}
+.process .card p {color:#f0f1eb}
+@media(max-width:700px) {.hero{min-height:65vh}}
+</style>
+</head>
+<body>
+<nav>
+ <div class="nav">
+  <a class="logo" href="#top">Mycology Bro</a>
+  <div class="links">
+   <a href="#recipes">Recipes</a>
+   <a href="#process">Processing</a>
+   <a href="#contact">Contact</a>
+  </div>
+ </div>
+</nav>
+
+<header class="hero" id="top">
+ <div class="hero-inner">
+  <div class="kicker">Mycology Bro</div>
+  <h1>Mycology<br>Recipes</h1>
+  <p><em>Simple recipes for cultivation</em></p>
+  <p>A collection of mycology recipes covering agar media, Master's Mix and coir/vermiculite substrate.</p>
+  <a class="cta" href="#recipes">View recipes</a>
+ </div>
+</header>
+
+<section id="recipes">
+ <div class="heading">
+  <div class="kicker">The recipes</div>
+  <h2>From agar to substrate.</h2>
+  <p class="lead">The current Mycology Bro recipes, recorded with their ingredients and quantities.</p>
+ </div>
+ <div class="grid">
+
+  <article class="card recipe-card">
+   <div class="recipe-number">Recipe 01 · Agar</div>
+   <h3>🍯 Honey Agar</h3>
+   <ul class="ingredients">
+    <li><strong>5 g</strong> light malt extract</li>
+    <li><strong>12 g</strong> agar</li>
+    <li><strong>12 g</strong> honey</li>
+    <li><strong>500 ml</strong> water</li>
+   </ul>
+  </article>
+
+  <article class="card recipe-card">
+   <div class="recipe-number">Recipe 02 · Agar</div>
+   <h3>🖤 Charcoal Ryzo Agar</h3>
+   <ul class="ingredients">
+    <li><strong>10 g</strong> agar</li>
+    <li><strong>6 g</strong> LME</li>
+    <li><strong>0.75 g</strong> nutritional yeast</li>
+    <li><strong>2 g</strong> activated charcoal</li>
+   </ul>
+  </article>
+
+  <article class="card recipe-card">
+   <div class="recipe-number">Recipe 03 · Substrate</div>
+   <h3>🍄 Master's Mix</h3>
+   <ul class="ingredients">
+    <li><strong>150 g</strong> hardwood fuel pellets</li>
+    <li><strong>150 g</strong> soy hulls</li>
+    <li><strong>450 g</strong> water, added after pellets are broken down</li>
+   </ul>
+   <p class="recipe-note"><strong>Total:</strong> 750 g wet — enough for one jar.</p>
+  </article>
+
+  <article class="card recipe-card">
+   <div class="recipe-number">Recipe 04 · Substrate</div>
+   <h3>🥥 Coir / Vermiculite Sub</h3>
+   <ul class="ingredients">
+    <li><strong>1 brick</strong> coir (650 g)</li>
+    <li><strong>2 quarts</strong> (~2 L) vermiculite</li>
+    <li><strong>~4 L</strong> boiling water</li>
+   </ul>
+  </article>
+ </div>
+</section>
+
+<section class="process" id="process">
+ <div class="process-inner">
+  <div class="heading">
+   <div class="kicker">Processing</div>
+   <h2>Master's Mix preparation.</h2>
+   <p class="lead" style="color:#d7d8cf;">The recorded preparation detail for the Master's Mix recipe.</p>
+  </div>
+  <div class="card">
+   <h3>🔥 Pressure cooking</h3>
+   <p><strong>PC for 2.5 hours in 2.5 L of water.</strong></p>
+  </div>
+ </div>
+</section>
+
+<section class="contact" id="contact">
+ <div class="contact-inner">
+  <div class="heading">
+   <div class="kicker">Get in touch</div>
+   <h2>Contact Mycology Bro.</h2>
+   <p class="lead">Have a question about the recipes? Send us a message and we'll get back to you.</p>
+  </div>
+  <form action="https://formspree.io/f/xzebdgve" method="POST" class="contact-form">
+   <label for="name">Name</label>
+   <input id="name" name="name" type="text" placeholder="Your name" required>
+   <label for="email">Email address</label>
+   <input id="email" name="email" type="email" placeholder="you@example.com" required>
+   <label for="message">Message</label>
+   <textarea id="message" name="message" rows="8" placeholder="Type your message here..." required></textarea>
+   <input type="hidden" name="_subject" value="Mycology Bro recipe enquiry">
+   <button type="submit">Send Message</button>
+  </form>
+ </div>
+</section>
+
+<footer>
+ <strong>Mycology Bro</strong><br>
+ Mycology Recipes<br><br>
+ Information provided for general educational purposes.
+</footer>
+</body>
+</html>
