@@ -233,7 +233,26 @@ footer strong{color:#fff}
 
 <script data-goatcounter="https://mycology-bro.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
-</body>
-</html>
+
+<script>
+(function () {
+  const el = document.getElementById('visitor-count');
+  if (!el) return;
+
+  fetch('https://mycology-bro.goatcounter.com/api/v0/stats/total?start=2020-01-01')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Could not get visitor count');
+      return response.json();
+    })
+    .then(function (data) {
+      if (data && data.total) {
+        el.textContent = Number(data.total).toLocaleString();
+      }
+    })
+    .catch(function () {
+      el.textContent = '—';
+    });
+})();
+</script>
 </body>
 </html>
