@@ -231,28 +231,24 @@ footer strong{color:#fff}
 </footer>
 
 
+<script>
+var t = setInterval(function () {
+  if (window.goatcounter && window.goatcounter.visit_count) {
+    clearInterval(t);
+
+    window.goatcounter.visit_count({
+      append: '#visitor-count',
+      path: 'TOTAL',
+      no_branding: true
+    });
+  }
+}, 100);
+</script>
+
 <script data-goatcounter="https://mycology-bro.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 
-<script>
-(function () {
-  const el = document.getElementById('visitor-count');
-  if (!el) return;
-
-  fetch('https://mycology-bro.goatcounter.com/api/v0/stats/total?start=2020-01-01')
-    .then(function (response) {
-      if (!response.ok) throw new Error('Could not get visitor count');
-      return response.json();
-    })
-    .then(function (data) {
-      if (data && data.total) {
-        el.textContent = Number(data.total).toLocaleString();
-      }
-    })
-    .catch(function () {
-      el.textContent = '—';
-    });
-})();
-</script>
+</body>
+</html>
 </body>
 </html>
