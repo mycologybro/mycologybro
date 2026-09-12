@@ -231,42 +231,26 @@ footer strong{color:#fff}
 </footer>
 
 
-<script>
-(function(){
-  const el=document.getElementById('visitor-count');
-  if(!el)return;
-  const domain=window.location.hostname;
-  if(!domain||domain==='localhost'||domain==='127.0.0.1')return;
-  fetch('https://visitor.6developer.com/visit',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      domain:domain,
-      timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
-      page_path:window.location.pathname,
-      page_title:document.title,
-      referrer:document.referrer
-    })
-  }).then(r=>{if(!r.ok)throw new Error();return r.json()})
-    .then(data=>{if(typeof data.totalCount==='number')el.textContent=data.totalCount.toLocaleString()})
-    .catch(()=>{el.textContent='—'});
-})();
-</script>
+<script data-goatcounter="https://mycology-bro.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 
 <script>
-(function () {
-  function loadVisitorCount() {
-    var target = document.getElementById('visitor-count');
-    if (!target || !window.goatcounter || !window.goatcounter.get_data) return;
-    var path = window.goatcounter.get_data()['p'];
-    var url = 'https://mycology-bro.goatcounter.com/counter/' + encodeURIComponent(path) + '.json';
-    fetch(url).then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-      .then(function (data) { if (data && data.count !== undefined) target.textContent = data.count; })
-      .catch(function () {});
-  }
-  if (window.goatcounter && window.goatcounter.get_data) loadVisitorCount();
-  else window.addEventListener('load', loadVisitorCount);
-})();
+window.addEventListener('load', function () {
+  var el = document.getElementById('visitor-count');
+  if (!el) return;
+
+  fetch('https://mycology-bro.goatcounter.com/counter//.json')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Counter unavailable');
+      return response.json();
+    })
+    .then(function (data) {
+      if (data && data.count !== undefined) {
+        el.textContent = data.count;
+      }
+    })
+    .catch(function () {});
+});
 </script>
 </body>
 </html>
